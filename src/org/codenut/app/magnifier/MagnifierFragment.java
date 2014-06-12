@@ -1,11 +1,13 @@
 package org.codenut.app.magnifier;
 
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
+import android.widget.Button;
 import android.widget.ZoomControls;
 
 import java.io.IOException;
@@ -17,6 +19,9 @@ public class MagnifierFragment extends Fragment {
     private Camera mCamera;
     private SurfaceView mSurfaceView;
     private ZoomControls mZoom;
+    private Button mLightButton;
+    private Zoomer mZoomer;
+    private Flasher mFlasher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -49,10 +54,13 @@ public class MagnifierFragment extends Fragment {
             public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
                 if (mCamera == null) return;
                 // The surface has changed size; update the camera preview size
-                Camera.Parameters parameters = mCamera.getParameters();
-                Camera.Size s = getBestSupportedSize(parameters.getSupportedPreviewSizes(), w, h);
-                parameters.setPreviewSize(s.width, s.height);
-                mCamera.setParameters(parameters);
+                Camera.Parameters p = mCamera.getParameters();
+                Camera.Size s = getBestSupportedSize(p.getSupportedPreviewSizes(), w, h);
+                p.setPreviewSize(s.width, s.height);
+                if (p.isZoomSupported()) {
+                    p.setZoom(mZoomer.getCurrentZoom());
+                }
+                mCamera.setParameters(p);
                 try {
                     mCamera.startPreview();
                 } catch (Exception e) {
@@ -68,27 +76,38 @@ public class MagnifierFragment extends Fragment {
         mZoom.setOnZoomInClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Camera.Parameters p = mCamera.getParameters();
-                int maxZoom = p.getMaxZoom();
-
-                int zoom = 0;
                 if (p.isZoomSupported()) {
-                    zoom += 10;
-                    if (zoom > maxZoom) {
-                        zoom -= 10;
-                    }
-                    p.setZoom(zoom);
+                    p.setZoom(mZoomer.zoomIn());
                 }
-
                 mCamera.setParameters(p);
-
-                try {
-                    mCamera.setPreviewDisplay(holder);
-                } catch (Exception e) {
-                }
-
                 mCamera.startPreview();
             }
         });
+        mZoom.setOnZoomOutClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Camera.Parameters p = mCamera.getParameters();
+                if (p.isZoomSupported()) {
+                    p.setZoom(mZoomer.zoomOut());
+                }
+                mCamera.setParameters(p);
+                mCamera.startPreview();
+            }
+        });
+
+        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            mLightButton = (Button) v.findViewById(R.id.button_light);
+            mLightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Camera.Parameters p = mCamera.getParameters();
+                    p.setFlashMode(mFlasher.toggle());
+                    mCamera.setParameters(p);
+                    mCamera.startPreview();
+                }
+            });
+        }
+
         return v;
     }
 
@@ -100,6 +119,8 @@ public class MagnifierFragment extends Fragment {
         } else {
             mCamera = Camera.open();
         }
+        mZoomer = new Zoomer(mCamera.getParameters().getMaxZoom());
+        mFlasher = new Flasher();
     }
 
     @Override
