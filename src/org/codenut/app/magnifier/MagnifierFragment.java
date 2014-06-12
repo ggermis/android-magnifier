@@ -1,7 +1,5 @@
 package org.codenut.app.magnifier;
 
-import android.graphics.Matrix;
-import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,17 +14,16 @@ import java.util.List;
 
 public class MagnifierFragment extends Fragment {
     private static final String TAG = "X";
-
     private Camera mCamera;
     private SurfaceView mSurfaceView;
     private ZoomControls mZoom;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        // inflate the camera fragment
         View v = inflater.inflate(R.layout.camera_fragment, parent, false);
 
+        // configure surface view
         mSurfaceView = (SurfaceView) v.findViewById(R.id.camera_surfaceView);
         final SurfaceHolder holder = mSurfaceView.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -54,7 +51,6 @@ public class MagnifierFragment extends Fragment {
                 // The surface has changed size; update the camera preview size
                 Camera.Parameters parameters = mCamera.getParameters();
                 Camera.Size s = getBestSupportedSize(parameters.getSupportedPreviewSizes(), w, h);
-                Log.i(TAG, "+++ width: " + s.width + ", height: " + s.height);
                 parameters.setPreviewSize(s.width, s.height);
                 mCamera.setParameters(parameters);
                 try {
@@ -67,6 +63,7 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
+        // configure zoom buttons
         mZoom = (ZoomControls) v.findViewById(R.id.zoom_control);
         mZoom.setOnZoomInClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -86,7 +83,8 @@ public class MagnifierFragment extends Fragment {
 
                 try {
                     mCamera.setPreviewDisplay(holder);
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                }
 
                 mCamera.startPreview();
             }
@@ -113,10 +111,11 @@ public class MagnifierFragment extends Fragment {
         }
     }
 
-
-    /** A simple algorithm to get the largest size available. For a more
+    /**
+     * A simple algorithm to get the largest size available. For a more
      * robust version, see CameraPreview.java in the ApiDemos
-     * sample app from Android. */
+     * sample app from Android.
+     */
     private Camera.Size getBestSupportedSize(List<Camera.Size> sizes, int width, int height) {
         Camera.Size bestSize = sizes.get(0);
         int largestArea = bestSize.width * bestSize.height;
