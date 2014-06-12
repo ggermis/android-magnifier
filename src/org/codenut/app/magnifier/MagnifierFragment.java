@@ -96,11 +96,10 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        mFreezeButton = (Button)v.findViewById(R.id.button_freeze);
-        mFreezeButton.setOnClickListener(new View.OnClickListener() {
+        v.setOnTouchListener(new View.OnTouchListener() {
             private boolean mFrozen = false;
             @Override
-            public void onClick(View v) {
+            public boolean onTouch(View v, MotionEvent event) {
                 if (mFrozen) {
                     mCamera.startPreview();
                     mFrozen = false;
@@ -108,8 +107,10 @@ public class MagnifierFragment extends Fragment {
                     mCamera.stopPreview();
                     mFrozen = true;
                 }
+                return false;
             }
         });
+
         if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             mLightButton = (Button) v.findViewById(R.id.button_light);
             mLightButton.setOnClickListener(new View.OnClickListener() {
