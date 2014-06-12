@@ -20,6 +20,7 @@ public class MagnifierFragment extends Fragment {
     private SurfaceView mSurfaceView;
     private ZoomControls mZoom;
     private Button mLightButton;
+    private Button mFreezeButton;
     private Zoomer mZoomer;
     private Flasher mFlasher;
 
@@ -95,6 +96,20 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
+        mFreezeButton = (Button)v.findViewById(R.id.button_freeze);
+        mFreezeButton.setOnClickListener(new View.OnClickListener() {
+            private boolean mFrozen = false;
+            @Override
+            public void onClick(View v) {
+                if (mFrozen) {
+                    mCamera.startPreview();
+                    mFrozen = false;
+                } else {
+                    mCamera.stopPreview();
+                    mFrozen = true;
+                }
+            }
+        });
         if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             mLightButton = (Button) v.findViewById(R.id.button_light);
             mLightButton.setOnClickListener(new View.OnClickListener() {

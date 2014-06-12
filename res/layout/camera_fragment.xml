@@ -9,12 +9,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    <Button
-            android:id="@+id/button_light"
+    <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="Light"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true">
+        <Button
+                android:id="@+id/button_freeze"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="F"/>
+
+        <Button
+                android:id="@+id/button_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/button_freeze"
+                android:text="L"/>
+    </LinearLayout>
 
     <ZoomControls
             android:id="@+id/zoom_control"
