@@ -9,7 +9,6 @@ import android.view.*;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
-import android.widget.ZoomControls;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +19,6 @@ public class MagnifierFragment extends Fragment {
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private SurfaceView mSurfaceView;
-    private ZoomControls mZoom;
     private SeekBar mZoomSeeker;
     private Switch mLightButton;
     private Zoomer mZoomer;
