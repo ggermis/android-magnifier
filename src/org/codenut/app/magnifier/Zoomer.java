@@ -7,7 +7,7 @@ public class Zoomer {
 
     public Zoomer(final int maxZoom) {
         mMaxZoom = maxZoom;
-        mCurrentZoom = maxZoom;
+        mCurrentZoom = maxZoom * 50 / 100; // 50 %
     }
 
     public int getCurrentZoom() {

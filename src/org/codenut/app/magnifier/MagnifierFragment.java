@@ -83,6 +83,7 @@ public class MagnifierFragment extends Fragment {
                     mParameters.setZoom(mZoomer.setPercentage(progress));
                 }
                 mCamera.setParameters(mParameters);
+                mCamera.startPreview();
             }
 
             @Override
