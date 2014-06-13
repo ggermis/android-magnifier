@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public class MagnifierFragment extends Fragment {
-    private static final String TAG = "X";
+    private static final String TAG = "org.codenut.app.magnifier";
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private SurfaceView mSurfaceView;
