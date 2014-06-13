@@ -7,7 +7,7 @@ public class Zoomer {
 
     public Zoomer(final int maxZoom) {
         mMaxZoom = maxZoom;
-        mCurrentZoom = maxZoom * 50 / 100; // 50 %
+        setPercentage(getDefaultPercentage());
     }
 
     public int getCurrentZoom() {
@@ -17,5 +17,9 @@ public class Zoomer {
     public int setPercentage(final int percentage) {
         mCurrentZoom = mMaxZoom * percentage / 100;
         return mCurrentZoom;
+    }
+
+    public int getDefaultPercentage() {
+        return 75;
     }
 }
