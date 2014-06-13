@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.ZoomControls;
 
@@ -20,6 +21,7 @@ public class MagnifierFragment extends Fragment {
     private Camera.Parameters mParameters;
     private SurfaceView mSurfaceView;
     private ZoomControls mZoom;
+    private SeekBar mZoomSeeker;
     private Switch mLightButton;
     private Zoomer mZoomer;
     private Flasher mFlasher;
@@ -72,24 +74,25 @@ public class MagnifierFragment extends Fragment {
         });
 
         // configure zoom buttons
-        mZoom = (ZoomControls) v.findViewById(R.id.zoom_control);
-        mZoom.setOnZoomInClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (mParameters.isZoomSupported()) {
-                    mParameters.setZoom(mZoomer.zoomIn());
-                }
-                mCamera.setParameters(mParameters);
-                mCamera.startPreview();
-            }
-        });
-        mZoom.setOnZoomOutClickListener(new View.OnClickListener() {
+        mZoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control_2);
+
+        mZoomSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (mParameters.isZoomSupported()) {
-                    mParameters.setZoom(mZoomer.zoomOut());
+                    mParameters.setZoom(mZoomer.setPercentage(progress));
                 }
                 mCamera.setParameters(mParameters);
-                mCamera.startPreview();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // do nothing
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // do nothing
             }
         });
 
