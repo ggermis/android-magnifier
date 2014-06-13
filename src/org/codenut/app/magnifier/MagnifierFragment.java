@@ -22,6 +22,7 @@ public class MagnifierFragment extends Fragment {
     private SeekBar mZoomSeeker;
     private Switch mLightButton;
     private Zoomer mZoomer;
+    private boolean mFrozen = false;
     private Flasher mFlasher;
 
     @Override
@@ -46,10 +47,7 @@ public class MagnifierFragment extends Fragment {
             }
 
             public void surfaceDestroyed(SurfaceHolder holder) {
-                // We can no longer display on this surface, so stop the preview.
-                if (mCamera != null) {
-                    mCamera.stopPreview();
-                }
+                stopCameraPreview();
             }
 
             public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -62,7 +60,7 @@ public class MagnifierFragment extends Fragment {
                 }
                 mCamera.setParameters(mParameters);
                 try {
-                    mCamera.startPreview();
+                    startCameraPreview();
                 } catch (Exception e) {
                     Log.e(TAG, "Could not start preview", e);
                     mCamera.release();
@@ -80,7 +78,9 @@ public class MagnifierFragment extends Fragment {
                     mParameters.setZoom(mZoomer.setPercentage(progress));
                 }
                 mCamera.setParameters(mParameters);
-                mCamera.startPreview();
+                if (mFrozen) {
+                    startCameraPreview();
+                }
             }
 
             @Override
@@ -95,21 +95,17 @@ public class MagnifierFragment extends Fragment {
         });
 
         v.setOnTouchListener(new View.OnTouchListener() {
-            private boolean mFrozen = false;
-
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (mFrozen) {
-                    mCamera.startPreview();
-                    mFrozen = false;
+                    startCameraPreview();
                 } else {
                     mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
                     mCamera.autoFocus(new Camera.AutoFocusCallback() {
                         @Override
                         public void onAutoFocus(boolean success, Camera camera) {
                             if (success) {
-                                camera.stopPreview();
-                                mFrozen = true;
+                                stopCameraPreview();
                             }
                         }
                     });
@@ -169,5 +165,19 @@ public class MagnifierFragment extends Fragment {
             }
         }
         return bestSize;
+    }
+
+    private void stopCameraPreview() {
+        if (mCamera != null) {
+            mCamera.stopPreview();
+            mFrozen = true;
+        }
+    }
+
+    private void startCameraPreview() {
+        if (mCamera != null) {
+            mCamera.startPreview();
+            mFrozen = false;
+        }
     }
 }
