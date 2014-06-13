@@ -28,7 +28,7 @@
     </LinearLayout>
 
     <SeekBar
-            android:id="@+id/zoom_control_2"
+            android:id="@+id/zoom_control"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_alignParentBottom="true"

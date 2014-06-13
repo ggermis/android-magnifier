@@ -74,7 +74,7 @@ public class MagnifierFragment extends Fragment {
         });
 
         // configure zoom buttons
-        mZoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control_2);
+        mZoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
         mZoomSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
