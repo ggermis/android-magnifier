@@ -1,13 +1,13 @@
 package org.codenut.app.magnifier;
 
-import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
-import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.ZoomControls;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class MagnifierFragment extends Fragment {
     private Camera.Parameters mParameters;
     private SurfaceView mSurfaceView;
     private ZoomControls mZoom;
-    private Button mLightButton;
+    private Switch mLightButton;
     private Zoomer mZoomer;
     private Flasher mFlasher;
 
@@ -56,7 +56,7 @@ public class MagnifierFragment extends Fragment {
                 if (mCamera == null) return;
                 // The surface has changed size; update the camera preview size
                 Camera.Size s = getBestSupportedSize(mParameters.getSupportedPreviewSizes(), w, h);
-                p.setPreviewSize(s.width, s.height);
+                mParameters.setPreviewSize(s.width, s.height);
                 if (mParameters.isZoomSupported()) {
                     mParameters.setZoom(mZoomer.getCurrentZoom());
                 }
@@ -95,30 +95,37 @@ public class MagnifierFragment extends Fragment {
 
         v.setOnTouchListener(new View.OnTouchListener() {
             private boolean mFrozen = false;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (mFrozen) {
                     mCamera.startPreview();
                     mFrozen = false;
                 } else {
-                    mCamera.stopPreview();
-                    mFrozen = true;
+                    mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
+                    mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                        @Override
+                        public void onAutoFocus(boolean success, Camera camera) {
+                            if (success) {
+                                camera.stopPreview();
+                                mFrozen = true;
+                            }
+                        }
+                    });
                 }
                 return false;
             }
         });
 
-        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-            mLightButton = (Button) v.findViewById(R.id.button_light);
-            mLightButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mParameters.setFlashMode(mFlasher.toggle());
-                    mCamera.setParameters(mParameters);
-                    mCamera.startPreview();
-                }
-            });
-        }
+        mLightButton = (Switch) v.findViewById(R.id.button_light);
+        mLightButton.setEnabled(true);
+        mLightButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mParameters.setFlashMode(mFlasher.toggle());
+                mCamera.setParameters(mParameters);
+            }
+        });
 
         return v;
     }
