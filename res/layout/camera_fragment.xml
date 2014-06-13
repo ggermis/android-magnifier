@@ -22,7 +22,8 @@
                 android:paddingTop="4dp"
                 android:paddingRight="4dp"
                 android:textOn="On"
-                android:textOff="Off"/>
+                android:textOff="Off"
+                android:alpha=".6"/>
 
     </LinearLayout>
 
@@ -36,6 +37,7 @@
             android:paddingRight="48dp"
             android:paddingBottom="4dp"
             android:progress="75"
+            android:alpha=".3"
             />
 
 </RelativeLayout>
