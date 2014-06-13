@@ -17,10 +17,10 @@ import java.util.List;
 public class MagnifierFragment extends Fragment {
     private static final String TAG = "X";
     private Camera mCamera;
+    private Camera.Parameters mParameters;
     private SurfaceView mSurfaceView;
     private ZoomControls mZoom;
     private Button mLightButton;
-    private Button mFreezeButton;
     private Zoomer mZoomer;
     private Flasher mFlasher;
 
@@ -55,13 +55,12 @@ public class MagnifierFragment extends Fragment {
             public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
                 if (mCamera == null) return;
                 // The surface has changed size; update the camera preview size
-                Camera.Parameters p = mCamera.getParameters();
-                Camera.Size s = getBestSupportedSize(p.getSupportedPreviewSizes(), w, h);
+                Camera.Size s = getBestSupportedSize(mParameters.getSupportedPreviewSizes(), w, h);
                 p.setPreviewSize(s.width, s.height);
-                if (p.isZoomSupported()) {
-                    p.setZoom(mZoomer.getCurrentZoom());
+                if (mParameters.isZoomSupported()) {
+                    mParameters.setZoom(mZoomer.getCurrentZoom());
                 }
-                mCamera.setParameters(p);
+                mCamera.setParameters(mParameters);
                 try {
                     mCamera.startPreview();
                 } catch (Exception e) {
@@ -76,22 +75,20 @@ public class MagnifierFragment extends Fragment {
         mZoom = (ZoomControls) v.findViewById(R.id.zoom_control);
         mZoom.setOnZoomInClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Camera.Parameters p = mCamera.getParameters();
-                if (p.isZoomSupported()) {
-                    p.setZoom(mZoomer.zoomIn());
+                if (mParameters.isZoomSupported()) {
+                    mParameters.setZoom(mZoomer.zoomIn());
                 }
-                mCamera.setParameters(p);
+                mCamera.setParameters(mParameters);
                 mCamera.startPreview();
             }
         });
         mZoom.setOnZoomOutClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Camera.Parameters p = mCamera.getParameters();
-                if (p.isZoomSupported()) {
-                    p.setZoom(mZoomer.zoomOut());
+                if (mParameters.isZoomSupported()) {
+                    mParameters.setZoom(mZoomer.zoomOut());
                 }
-                mCamera.setParameters(p);
+                mCamera.setParameters(mParameters);
                 mCamera.startPreview();
             }
         });
@@ -116,9 +113,8 @@ public class MagnifierFragment extends Fragment {
             mLightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Camera.Parameters p = mCamera.getParameters();
-                    p.setFlashMode(mFlasher.toggle());
-                    mCamera.setParameters(p);
+                    mParameters.setFlashMode(mFlasher.toggle());
+                    mCamera.setParameters(mParameters);
                     mCamera.startPreview();
                 }
             });
@@ -135,7 +131,8 @@ public class MagnifierFragment extends Fragment {
         } else {
             mCamera = Camera.open();
         }
-        mZoomer = new Zoomer(mCamera.getParameters().getMaxZoom());
+        mParameters = mCamera.getParameters();
+        mZoomer = new Zoomer(mParameters.getMaxZoom());
         mFlasher = new Flasher();
     }
 
