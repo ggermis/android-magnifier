@@ -9,35 +9,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    <LinearLayout
+
+    <Switch
+            android:id="@+id/button_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingRight="4dp"
+            android:textOn="On"
+            android:textOff="Off"
+            android:alpha=".6"
+            android:layout_alignParentRight="true"/>
+
+
+    <android.widget.VerticalSeekBar
+            android:id="@+id/zoom_control"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_alignParentRight="true">
-
-        <Switch
-                android:id="@+id/button_light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="4dp"
-                android:paddingRight="4dp"
-                android:textOn="On"
-                android:textOff="Off"
-                android:alpha=".6"/>
-
-    </LinearLayout>
-
-    <SeekBar
-            android:id="@+id/zoom_control"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:paddingLeft="48dp"
-            android:paddingRight="48dp"
+            android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:progress="75"
-            android:alpha=".3"
-            />
+            android:alpha=".6"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/button_light"/>
 
 </RelativeLayout>
