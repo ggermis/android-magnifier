@@ -1,24 +1,19 @@
 package org.codenut.app.magnifier;
 
 import android.content.pm.PackageManager;
-import android.graphics.*;
+import android.graphics.ImageFormat;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,6 +24,7 @@ public class MagnifierFragment extends Fragment {
     private Camera.Parameters mParameters;
     private SurfaceView mSurfaceView;
     private ImageView mPreview;
+    private PreviewImage mPreviewImage;
     private SeekBar mZoomSeeker;
     private Switch mLightButton;
     private Zoomer mZoomer;
@@ -82,7 +78,7 @@ public class MagnifierFragment extends Fragment {
         });
 
         mPreview = (ImageView) v.findViewById(R.id.preview);
-        mPreview.setImageBitmap(loadImage());
+        // mPreview.setImageBitmap(mPreviewImage.asBitmap());
 
         // configure zoom buttons
         mZoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
@@ -145,6 +141,7 @@ public class MagnifierFragment extends Fragment {
         mParameters.setPreviewFormat(ImageFormat.JPEG);
         mZoomer = new Zoomer(mParameters.getMaxZoom());
         mFlasher = new Flasher();
+        mPreviewImage = new PreviewImage(mPreview, getActivity().getFilesDir(), "test.jpg");
     }
 
     @Override
@@ -188,64 +185,20 @@ public class MagnifierFragment extends Fragment {
         }
     }
 
-    public void updateImagePreview() {
-        imagePreviewFadeIn(loadImage());
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                imagePreviewFadeOut();
-            }
-        }, 2000);
+    private void captureScreen() {
+        mPreviewImage.capture(mFrozenImage, mParameters.getPreviewSize());
     }
 
-    public Bitmap loadImage() {
-        File imgFile = new File(getActivity().getFilesDir(), "test.jpg");
-        return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-    }
-
-    public void imagePreviewFadeIn(Bitmap bitmap) {
-        mPreview.setImageBitmap(bitmap);
-
-        Animation fadeIn = new AlphaAnimation(0.00f, 1.00f);
-        fadeIn.setDuration(2000);
-        fadeIn.setAnimationListener(new Animation.AnimationListener() {
-            public void onAnimationStart(Animation animation) {
-            }
-
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            public void onAnimationEnd(Animation animation) {
-            }
-        });
-        mPreview.startAnimation(fadeIn);
-    }
-
-    public void imagePreviewFadeOut() {
-        Animation fadeOut = new AlphaAnimation(1.00f, 0.00f);
-        fadeOut.setDuration(2000);
-        fadeOut.setAnimationListener(new Animation.AnimationListener() {
-            public void onAnimationStart(Animation animation) {
-            }
-
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            public void onAnimationEnd(Animation animation) {
-                mPreview.setVisibility(View.GONE);
-            }
-        });
-        mPreview.startAnimation(fadeOut);
+    private void showImagePreview() {
+        mPreviewImage.preview();
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (mFrozen) {
                 captureScreen();
-                updateImagePreview();
+                showImagePreview();
                 startCameraPreview();
             }
             return super.onFling(e1, e2, velocityX, velocityY);
@@ -279,29 +232,6 @@ public class MagnifierFragment extends Fragment {
                 }
             }
             return false;
-        }
-
-        private void captureScreen() {
-            String path = getActivity().getFilesDir() + "/test.jpg";
-            try {
-                Camera.Size size = mParameters.getPreviewSize();
-                Rect rectangle = new Rect();
-                rectangle.bottom = size.height;
-                rectangle.top = 0;
-                rectangle.left = 0;
-                rectangle.right = size.width;
-
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                mFrozenImage.compressToJpeg(rectangle, 100, out);
-
-                FileOutputStream fos = new FileOutputStream(new File(path));
-                out.writeTo(fos);
-                out.close();
-                fos.close();
-                mFrozenImage = null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
