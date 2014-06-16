@@ -5,9 +5,12 @@ import android.graphics.*;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.*;
 
 import java.io.ByteArrayOutputStream;
@@ -184,8 +187,50 @@ public class MagnifierFragment extends Fragment {
 
     public void updateImagePreview() {
         File imgFile = new File(getActivity().getFilesDir(), "test.jpg");
-        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        mPreview.setImageBitmap(myBitmap);
+        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        imagePreviewFadeIn(bitmap);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imagePreviewFadeOut();
+            }
+        }, 2000);
+    }
+
+    public void imagePreviewFadeIn(Bitmap bitmap) {
+        mPreview.setImageBitmap(bitmap);
+
+        Animation fadeIn = new AlphaAnimation(0.00f, 1.00f);
+        fadeIn.setDuration(2000);
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationStart(Animation animation) {
+            }
+
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            public void onAnimationEnd(Animation animation) {
+            }
+        });
+        mPreview.startAnimation(fadeIn);
+    }
+
+    public void imagePreviewFadeOut() {
+        Animation fadeOut = new AlphaAnimation(1.00f, 0.00f);
+        fadeOut.setDuration(2000);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationStart(Animation animation) {
+            }
+
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            public void onAnimationEnd(Animation animation) {
+                mPreview.setVisibility(View.GONE);
+            }
+        });
+        mPreview.startAnimation(fadeOut);
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
