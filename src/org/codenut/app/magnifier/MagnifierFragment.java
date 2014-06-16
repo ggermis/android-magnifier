@@ -79,7 +79,7 @@ public class MagnifierFragment extends Fragment {
         });
 
         mPreview = (ImageView) v.findViewById(R.id.preview);
-        updateImagePreview();
+        mPreview.setImageBitmap(loadImage());
 
         // configure zoom buttons
         mZoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
@@ -186,9 +186,7 @@ public class MagnifierFragment extends Fragment {
     }
 
     public void updateImagePreview() {
-        File imgFile = new File(getActivity().getFilesDir(), "test.jpg");
-        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        imagePreviewFadeIn(bitmap);
+        imagePreviewFadeIn(loadImage());
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -196,6 +194,11 @@ public class MagnifierFragment extends Fragment {
                 imagePreviewFadeOut();
             }
         }, 2000);
+    }
+
+    public Bitmap loadImage() {
+        File imgFile = new File(getActivity().getFilesDir(), "test.jpg");
+        return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
     }
 
     public void imagePreviewFadeIn(Bitmap bitmap) {
@@ -292,7 +295,6 @@ public class MagnifierFragment extends Fragment {
                 out.writeTo(fos);
                 out.close();
                 fos.close();
-                Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG).show();
                 mFrozenImage = null;
             } catch (Exception e) {
                 e.printStackTrace();
