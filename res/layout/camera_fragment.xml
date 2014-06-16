@@ -9,6 +9,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+    <ImageView
+            android:id="@+id/preview"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:contentDescription="preview"
+            android:background="#000000"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            />
 
     <Switch
             android:id="@+id/button_light"

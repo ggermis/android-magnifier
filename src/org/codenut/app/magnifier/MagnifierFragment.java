@@ -1,15 +1,18 @@
 package org.codenut.app.magnifier;
 
+import android.content.pm.PackageManager;
+import android.graphics.*;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
-import android.widget.CompoundButton;
-import android.widget.SeekBar;
-import android.widget.Switch;
+import android.widget.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,11 +22,14 @@ public class MagnifierFragment extends Fragment {
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private SurfaceView mSurfaceView;
+    private ImageView mPreview;
     private SeekBar mZoomSeeker;
     private Switch mLightButton;
     private Zoomer mZoomer;
     private boolean mFrozen = false;
     private Flasher mFlasher;
+    private GestureDetector mGestureDetector;
+    private YuvImage mFrozenImage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -69,6 +75,9 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
+        mPreview = (ImageView) v.findViewById(R.id.preview);
+        updateImagePreview();
+
         // configure zoom buttons
         mZoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
         mZoomSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -94,23 +103,14 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
+        mGestureDetector = new GestureDetector(getActivity(), new GestureListener());
         v.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (mFrozen) {
-                    startCameraPreview();
-                } else {
-                    mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
-                    mCamera.autoFocus(new Camera.AutoFocusCallback() {
-                        @Override
-                        public void onAutoFocus(boolean success, Camera camera) {
-                            if (success) {
-                                stopCameraPreview();
-                            }
-                        }
-                    });
+                if (mGestureDetector.onTouchEvent(event)) {
+                    return false;
                 }
-                return false;
+                return true;
             }
         });
 
@@ -136,6 +136,7 @@ public class MagnifierFragment extends Fragment {
             mCamera = Camera.open();
         }
         mParameters = mCamera.getParameters();
+        mParameters.setPreviewFormat(ImageFormat.JPEG);
         mZoomer = new Zoomer(mParameters.getMaxZoom());
         mFlasher = new Flasher();
     }
@@ -180,4 +181,78 @@ public class MagnifierFragment extends Fragment {
             mFrozen = false;
         }
     }
+
+    public void updateImagePreview() {
+        File imgFile = new File(getActivity().getFilesDir(), "test.jpg");
+        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        mPreview.setImageBitmap(myBitmap);
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (mFrozen) {
+                captureScreen();
+                updateImagePreview();
+                startCameraPreview();
+            }
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (mFrozen) {
+                startCameraPreview();
+            } else {
+                if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
+                    mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
+                    mParameters.setPreviewFormat(ImageFormat.JPEG);
+                    mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                        @Override
+                        public void onAutoFocus(boolean success, Camera camera) {
+                            if (success) {
+                                mCamera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
+                                    @Override
+                                    public void onPreviewFrame(byte[] data, Camera camera) {
+                                        Camera.Size size = mParameters.getPreviewSize();
+                                        mFrozenImage = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
+                                        stopCameraPreview();
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    stopCameraPreview();
+                }
+            }
+            return false;
+        }
+
+        private void captureScreen() {
+            String path = getActivity().getFilesDir() + "/test.jpg";
+            try {
+                Camera.Size size = mParameters.getPreviewSize();
+                Rect rectangle = new Rect();
+                rectangle.bottom = size.height;
+                rectangle.top = 0;
+                rectangle.left = 0;
+                rectangle.right = size.width;
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                mFrozenImage.compressToJpeg(rectangle, 100, out);
+
+                FileOutputStream fos = new FileOutputStream(new File(path));
+                out.writeTo(fos);
+                out.close();
+                fos.close();
+                Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG).show();
+                mFrozenImage = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
