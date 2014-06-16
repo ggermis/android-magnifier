@@ -34,25 +34,6 @@ public class PreviewImage {
         mName = name;
     }
 
-    public String getName() {
-        return mName;
-    }
-
-    public File getFullPath() {
-        return new File(mDirectory, getName());
-    }
-
-    public void preview() {
-        fadeIn(asBitmap());
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fadeOut();
-            }
-        }, ANIMATION_DURATION);
-    }
-
     public void capture(final YuvImage image, final Camera.Size size) {
         ByteArrayOutputStream bos = null;
         FileOutputStream fos = null;
@@ -88,10 +69,29 @@ public class PreviewImage {
                 }
             }
         }
-
     }
 
-    public Bitmap asBitmap() {
+    public void preview() {
+        fadeIn(asBitmap());
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fadeOut();
+            }
+        }, ANIMATION_DURATION);
+    }
+
+
+    private String getName() {
+        return mName;
+    }
+
+    private File getFullPath() {
+        return new File(mDirectory, getName());
+    }
+
+    private Bitmap asBitmap() {
         File imgFile = new File(mDirectory, getName());
         return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
     }

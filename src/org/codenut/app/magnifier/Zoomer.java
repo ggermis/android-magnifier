@@ -1,13 +1,12 @@
 package org.codenut.app.magnifier;
 
 public class Zoomer {
-    private static final int INCREMENT = 3;
     private int mMaxZoom;
     private int mCurrentZoom;
 
     public Zoomer(final int maxZoom) {
         mMaxZoom = maxZoom;
-        setPercentage(getDefaultPercentage());
+        setPercentage(getDefaultZoomLevel());
     }
 
     public int getCurrentZoom() {
@@ -19,7 +18,7 @@ public class Zoomer {
         return mCurrentZoom;
     }
 
-    public int getDefaultPercentage() {
+    private int getDefaultZoomLevel() {
         return 75;
     }
 }

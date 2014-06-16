@@ -1,6 +1,5 @@
 package org.codenut.app.magnifier;
 
-import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
@@ -23,15 +22,15 @@ public class MagnifierFragment extends Fragment {
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private SurfaceView mSurfaceView;
-    private ImageView mPreview;
+    private ImageView mPreviewImageContainer;
     private PreviewImage mPreviewImage;
     private SeekBar mZoomSeeker;
-    private Switch mLightButton;
     private Zoomer mZoomer;
-    private boolean mFrozen = false;
+    private Switch mLightButton;
     private Flasher mFlasher;
-    private GestureDetector mGestureDetector;
+    private boolean mFrozen = false;
     private YuvImage mFrozenImage;
+    private GestureDetector mGestureDetector;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -77,8 +76,7 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        mPreview = (ImageView) v.findViewById(R.id.preview);
-        // mPreview.setImageBitmap(mPreviewImage.asBitmap());
+        mPreviewImageContainer = (ImageView) v.findViewById(R.id.preview);
 
         // configure zoom buttons
         mZoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
@@ -141,7 +139,7 @@ public class MagnifierFragment extends Fragment {
         mParameters.setPreviewFormat(ImageFormat.JPEG);
         mZoomer = new Zoomer(mParameters.getMaxZoom());
         mFlasher = new Flasher();
-        mPreviewImage = new PreviewImage(mPreview, getActivity().getFilesDir(), "test.jpg");
+        mPreviewImage = new PreviewImage(mPreviewImageContainer, getActivity().getFilesDir(), "test.jpg");
     }
 
     @Override
@@ -209,27 +207,23 @@ public class MagnifierFragment extends Fragment {
             if (mFrozen) {
                 startCameraPreview();
             } else {
-                if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
-                    mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
-                    mParameters.setPreviewFormat(ImageFormat.JPEG);
-                    mCamera.autoFocus(new Camera.AutoFocusCallback() {
-                        @Override
-                        public void onAutoFocus(boolean success, Camera camera) {
-                            if (success) {
-                                mCamera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
-                                    @Override
-                                    public void onPreviewFrame(byte[] data, Camera camera) {
-                                        Camera.Size size = mParameters.getPreviewSize();
-                                        mFrozenImage = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
-                                        stopCameraPreview();
-                                    }
-                                });
-                            }
+                mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
+                mParameters.setPreviewFormat(ImageFormat.JPEG);
+                mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                    @Override
+                    public void onAutoFocus(boolean success, Camera camera) {
+                        if (success) {
+                            mCamera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
+                                @Override
+                                public void onPreviewFrame(byte[] data, Camera camera) {
+                                    Camera.Size size = mParameters.getPreviewSize();
+                                    mFrozenImage = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
+                                    stopCameraPreview();
+                                }
+                            });
                         }
-                    });
-                } else {
-                    stopCameraPreview();
-                }
+                    }
+                });
             }
             return false;
         }
