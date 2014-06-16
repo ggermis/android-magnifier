@@ -19,6 +19,7 @@ import java.util.List;
 
 public class MagnifierFragment extends Fragment {
     private static final String TAG = "org.codenut.app.magnifier";
+
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private ImageView mPreviewImageContainer;
@@ -39,7 +40,6 @@ public class MagnifierFragment extends Fragment {
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         holder.addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
-                // Tell the camera to use this surface as its preview area
                 if (mCamera != null) {
                     try {
                         mCamera.setPreviewDisplay(holder);
@@ -207,7 +207,6 @@ public class MagnifierFragment extends Fragment {
                 startCameraPreview();
             } else {
                 mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
-                // mParameters.setPreviewFormat(ImageFormat.NV21);
                 mCamera.autoFocus(new Camera.AutoFocusCallback() {
                     @Override
                     public void onAutoFocus(boolean success, Camera camera) {
