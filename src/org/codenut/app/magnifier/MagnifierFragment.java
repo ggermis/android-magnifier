@@ -21,35 +21,31 @@ public class MagnifierFragment extends Fragment {
     private static final String TAG = "org.codenut.app.magnifier";
     private Camera mCamera;
     private Camera.Parameters mParameters;
-    private SurfaceView mSurfaceView;
     private ImageView mPreviewImageContainer;
     private PreviewImage mPreviewImage;
-    private SeekBar mZoomSeeker;
-    private Zoomer mZoomer;
-    private Switch mLightButton;
-    private Flasher mFlasher;
+    private ZoomController mZoomController;
+    private Toggle<String> mFlashToggle;
     private boolean mFrozen = false;
     private YuvImage mFrozenImage;
     private GestureDetector mGestureDetector;
+    private Toggle<String> mNegativeToggle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        // inflate the camera fragment
         View v = inflater.inflate(R.layout.camera_fragment, parent, false);
 
-        // configure surface view
-        mSurfaceView = (SurfaceView) v.findViewById(R.id.camera_surfaceView);
-        final SurfaceHolder holder = mSurfaceView.getHolder();
+        final SurfaceView surfaceView = (SurfaceView) v.findViewById(R.id.camera_surfaceView);
+        final SurfaceHolder holder = surfaceView.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         holder.addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
                 // Tell the camera to use this surface as its preview area
-                try {
-                    if (mCamera != null) {
+                if (mCamera != null) {
+                    try {
                         mCamera.setPreviewDisplay(holder);
+                    } catch (IOException exception) {
+                        Log.e(TAG, "Error setting up preview display", exception);
                     }
-                } catch (IOException exception) {
-                    Log.e(TAG, "Error setting up preview display", exception);
                 }
             }
 
@@ -59,34 +55,27 @@ public class MagnifierFragment extends Fragment {
 
             public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
                 if (mCamera == null) return;
-                // The surface has changed size; update the camera preview size
+
                 Camera.Size s = getBestSupportedSize(mParameters.getSupportedPreviewSizes(), w, h);
                 mParameters.setPreviewSize(s.width, s.height);
                 if (mParameters.isZoomSupported()) {
-                    mParameters.setZoom(mZoomer.getCurrentZoom());
+                    mParameters.setZoom(mZoomController.getCurrentZoom());
                 }
                 mCamera.setParameters(mParameters);
-                try {
-                    startCameraPreview();
-                } catch (Exception e) {
-                    Log.e(TAG, "Could not start preview", e);
-                    mCamera.release();
-                    mCamera = null;
-                }
+                startCameraPreview();
             }
         });
 
         mPreviewImageContainer = (ImageView) v.findViewById(R.id.preview);
 
-        // configure zoom buttons
-        mZoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
-        mZoomSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        final SeekBar zoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
+        zoomSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (mParameters.isZoomSupported()) {
-                    mParameters.setZoom(mZoomer.setPercentage(progress));
+                    mParameters.setZoom(mZoomController.setPercentage(progress));
+                    mCamera.setParameters(mParameters);
                 }
-                mCamera.setParameters(mParameters);
                 if (mFrozen) {
                     startCameraPreview();
                 }
@@ -114,12 +103,22 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        mLightButton = (Switch) v.findViewById(R.id.button_light);
-        mLightButton.setEnabled(true);
-        mLightButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final Switch lightButton = (Switch) v.findViewById(R.id.button_light);
+        lightButton.setEnabled(true);
+        lightButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mParameters.setFlashMode(mFlasher.toggle());
+                mParameters.setFlashMode(mFlashToggle.toggle());
+                mCamera.setParameters(mParameters);
+            }
+        });
+
+        final Switch negativeButton = (Switch) v.findViewById(R.id.button_negative);
+        negativeButton.setEnabled(true);
+        negativeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mParameters.setColorEffect(mNegativeToggle.toggle());
                 mCamera.setParameters(mParameters);
             }
         });
@@ -136,9 +135,10 @@ public class MagnifierFragment extends Fragment {
             mCamera = Camera.open();
         }
         mParameters = mCamera.getParameters();
-        mParameters.setPreviewFormat(ImageFormat.JPEG);
-        mZoomer = new Zoomer(mParameters.getMaxZoom());
-        mFlasher = new Flasher();
+        mParameters.setPreviewFormat(ImageFormat.NV21);
+        mZoomController = new ZoomController(mParameters.getMaxZoom());
+        mFlashToggle = new Toggle<String>(Camera.Parameters.FLASH_MODE_ON, Camera.Parameters.FLASH_MODE_OFF);
+        mNegativeToggle = new Toggle<String>(Camera.Parameters.EFFECT_NEGATIVE, Camera.Parameters.EFFECT_NONE);
         mPreviewImage = new PreviewImage(mPreviewImageContainer, getActivity().getFilesDir(), "test.jpg");
     }
 
@@ -152,9 +152,8 @@ public class MagnifierFragment extends Fragment {
     }
 
     /**
-     * A simple algorithm to get the largest size available. For a more
-     * robust version, see CameraPreview.java in the ApiDemos
-     * sample app from Android.
+     * A simple algorithm to get the largest size available.
+     * For a more robust version, see CameraPreview.java in the ApiDemos sample app from Android.
      */
     private Camera.Size getBestSupportedSize(List<Camera.Size> sizes, int width, int height) {
         Camera.Size bestSize = sizes.get(0);
@@ -208,7 +207,7 @@ public class MagnifierFragment extends Fragment {
                 startCameraPreview();
             } else {
                 mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
-                mParameters.setPreviewFormat(ImageFormat.JPEG);
+                // mParameters.setPreviewFormat(ImageFormat.NV21);
                 mCamera.autoFocus(new Camera.AutoFocusCallback() {
                     @Override
                     public void onAutoFocus(boolean success, Camera camera) {

@@ -1,10 +1,10 @@
 package org.codenut.app.magnifier;
 
-public class Zoomer {
+public class ZoomController {
     private int mMaxZoom;
     private int mCurrentZoom;
 
-    public Zoomer(final int maxZoom) {
+    public ZoomController(final int maxZoom) {
         mMaxZoom = maxZoom;
         setPercentage(getDefaultZoomLevel());
     }
