@@ -23,11 +23,11 @@ public class MagnifierFragment extends Fragment {
     private Camera.Parameters mParameters;
     private ImageView mPreviewImageContainer;
     private PreviewImage mPreviewImage;
-    private ZoomController mZoomController;
-    private Toggle<String> mFlashToggle;
     private boolean mFrozen = false;
     private YuvImage mFrozenImage;
     private GestureDetector mGestureDetector;
+    private Slider mZoomSlider;
+    private Toggle<String> mFlashToggle;
     private Toggle<String> mNegativeToggle;
 
     @Override
@@ -59,7 +59,7 @@ public class MagnifierFragment extends Fragment {
                 Camera.Size s = getBestSupportedSize(mParameters.getSupportedPreviewSizes(), w, h);
                 mParameters.setPreviewSize(s.width, s.height);
                 if (mParameters.isZoomSupported()) {
-                    mParameters.setZoom(mZoomController.getCurrentZoom());
+                    mParameters.setZoom(mZoomSlider.getCurrentValue());
                 }
                 mCamera.setParameters(mParameters);
                 startCameraPreview();
@@ -73,7 +73,7 @@ public class MagnifierFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (mParameters.isZoomSupported()) {
-                    mParameters.setZoom(mZoomController.setPercentage(progress));
+                    mParameters.setZoom(mZoomSlider.setLevel(progress));
                     mCamera.setParameters(mParameters);
                 }
                 if (mFrozen) {
@@ -136,7 +136,7 @@ public class MagnifierFragment extends Fragment {
         }
         mParameters = mCamera.getParameters();
         mParameters.setPreviewFormat(ImageFormat.NV21);
-        mZoomController = new ZoomController(mParameters.getMaxZoom());
+        mZoomSlider = new Slider(mParameters.getMaxZoom());
         mFlashToggle = new Toggle<String>(Camera.Parameters.FLASH_MODE_ON, Camera.Parameters.FLASH_MODE_OFF);
         mNegativeToggle = new Toggle<String>(Camera.Parameters.EFFECT_NEGATIVE, Camera.Parameters.EFFECT_NONE);
         mPreviewImage = new PreviewImage(mPreviewImageContainer, getActivity().getFilesDir(), "test.jpg");
