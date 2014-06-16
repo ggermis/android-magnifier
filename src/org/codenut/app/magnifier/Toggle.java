@@ -5,7 +5,7 @@ public class Toggle<T> {
     private T mOnValue;
     private T mOffValue;
 
-    public Toggle(T onValue, T offValue) {
+    public Toggle(final T onValue, final T offValue) {
         mOnValue = onValue;
         mOffValue = offValue;
     }
