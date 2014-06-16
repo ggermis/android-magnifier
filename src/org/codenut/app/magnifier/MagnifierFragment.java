@@ -19,7 +19,6 @@ import java.util.List;
 
 public class MagnifierFragment extends Fragment {
     private static final String TAG = "org.codenut.app.magnifier";
-
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private ImageView mPreviewImageContainer;
@@ -130,7 +129,7 @@ public class MagnifierFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            mCamera = Camera.open(0);
+            mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
         } else {
             mCamera = Camera.open();
         }
