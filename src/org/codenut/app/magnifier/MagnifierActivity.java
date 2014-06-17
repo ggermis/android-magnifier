@@ -19,6 +19,5 @@ public class MagnifierActivity extends FragmentActivity {
                     .add(R.id.fragment_container, fragment)
                     .commit();
         }
-
     }
 }

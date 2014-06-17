@@ -11,12 +11,12 @@
 
     <ImageView
             android:id="@+id/preview"
-            android:layout_width="108dp"
-            android:layout_height="68dp"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
             android:contentDescription="preview"
             android:background="#000000"
             android:layout_margin="4dp"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:visibility="invisible"
             />
 
@@ -25,10 +25,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:textOn="On"
-            android:textOff="Off"
+            android:textOn="light"
+            android:textOff="dark"
             android:alpha=".6"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:saveEnabled="false"/>
 
     <android.widget.VerticalSeekBar
             android:id="@+id/zoom_control"
@@ -38,16 +39,29 @@
             android:progress="75"
             android:alpha=".6"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/button_light"/>
+            android:layout_below="@id/button_light"
+            android:saveEnabled="false"/>
 
     <Switch
             android:id="@+id/button_negative"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:textOn="Negative"
-            android:textOff="Normal"
+            android:textOn="inverse"
+            android:textOff="normal"
+            android:layout_toLeftOf="@id/button_light"
             android:alpha=".6"
-            android:layout_alignParentLeft="true"/>
+            android:saveEnabled="false"/>
+
+    <Switch
+            android:id="@+id/focus_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:textOn="auto"
+            android:textOff="macro"
+            android:alpha=".6"
+            android:layout_toLeftOf="@id/button_negative"
+            android:saveEnabled="false"/>
 
 </RelativeLayout>

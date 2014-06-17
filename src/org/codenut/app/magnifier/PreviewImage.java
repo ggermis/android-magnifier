@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,13 +20,12 @@ import java.util.UUID;
 
 public class PreviewImage {
     private static final int ANIMATION_DURATION = 2000;
-
     private File mDirectory;
     private ImageView mContainer;
     private String mName;
 
     public PreviewImage(final ImageView container, final File directory) {
-        this(container, directory, UUID.randomUUID().toString());
+        this(container, directory, UUID.randomUUID().toString() + ".jpg");
     }
 
     public PreviewImage(final ImageView container, final File directory, final String name) {
@@ -81,7 +81,6 @@ public class PreviewImage {
             }
         }, ANIMATION_DURATION);
     }
-
 
     private String getName() {
         return mName;

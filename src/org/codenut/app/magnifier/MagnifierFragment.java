@@ -6,6 +6,7 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.*;
 import android.widget.CompoundButton;
@@ -21,23 +22,22 @@ public class MagnifierFragment extends Fragment {
     private static final String TAG = "org.codenut.app.magnifier";
     private Camera mCamera;
     private Camera.Parameters mParameters;
+    private SurfaceHolder mHolder;
     private ImageView mPreviewImageContainer;
     private PreviewImage mPreviewImage;
     private boolean mFrozen = false;
     private YuvImage mFrozenImage;
     private GestureDetector mGestureDetector;
     private Slider mZoomSlider;
-    private Toggle<String> mFlashToggle;
-    private Toggle<String> mNegativeToggle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.camera_fragment, parent, false);
 
         final SurfaceView surfaceView = (SurfaceView) v.findViewById(R.id.camera_surfaceView);
-        final SurfaceHolder holder = surfaceView.getHolder();
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        holder.addCallback(new SurfaceHolder.Callback() {
+        mHolder = surfaceView.getHolder();
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mHolder.addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
                 if (mCamera != null) {
                     try {
@@ -62,6 +62,19 @@ public class MagnifierFragment extends Fragment {
                 }
                 mCamera.setParameters(mParameters);
                 startCameraPreview();
+            }
+        });
+        mGestureDetector = new GestureDetector(getActivity(), new GestureListener());
+        surfaceView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mGestureDetector.onTouchEvent(event);
             }
         });
 
@@ -91,24 +104,17 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        mGestureDetector = new GestureDetector(getActivity(), new GestureListener());
-        v.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (mGestureDetector.onTouchEvent(event)) {
-                    return false;
-                }
-                return true;
-            }
-        });
-
         final Switch lightButton = (Switch) v.findViewById(R.id.button_light);
         lightButton.setEnabled(true);
         lightButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mParameters.setFlashMode(mFlashToggle.toggle());
+                Toggle<String> flashToggle = new Toggle<String>(Camera.Parameters.FLASH_MODE_TORCH, Camera.Parameters.FLASH_MODE_OFF);
+                mParameters.setFlashMode(flashToggle.toggle(isChecked));
                 mCamera.setParameters(mParameters);
+                if (mFrozen) {
+                    startCameraPreview();
+                }
             }
         });
 
@@ -117,28 +123,43 @@ public class MagnifierFragment extends Fragment {
         negativeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mParameters.setColorEffect(mNegativeToggle.toggle());
+                Toggle<String> negativeToggle = new Toggle<String>(Camera.Parameters.EFFECT_NEGATIVE, Camera.Parameters.EFFECT_NONE);
+                mParameters.setColorEffect(negativeToggle.toggle(isChecked));
                 mCamera.setParameters(mParameters);
+                if (mFrozen) {
+                    startCameraPreview();
+                }
             }
         });
 
+        final Switch focusModeButton = (Switch) v.findViewById(R.id.focus_mode);
+        focusModeButton.setEnabled(true);
+        focusModeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Toggle<String> focusModeToggle = new Toggle<String>(Camera.Parameters.FOCUS_MODE_AUTO, Camera.Parameters.FOCUS_MODE_MACRO);
+                mParameters.setFocusMode(focusModeToggle.toggle(isChecked));
+                mCamera.setParameters(mParameters);
+                if (mFrozen) {
+                    startCameraPreview();
+                }
+            }
+        });
         return v;
     }
 
     @Override
     public void onResume() {
-        super.onResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
         } else {
             mCamera = Camera.open();
         }
         mParameters = mCamera.getParameters();
+        mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
         mParameters.setPreviewFormat(ImageFormat.NV21);
         mZoomSlider = new Slider(mParameters.getMaxZoom());
-        mFlashToggle = new Toggle<String>(Camera.Parameters.FLASH_MODE_ON, Camera.Parameters.FLASH_MODE_OFF);
-        mNegativeToggle = new Toggle<String>(Camera.Parameters.EFFECT_NEGATIVE, Camera.Parameters.EFFECT_NONE);
-        mPreviewImage = new PreviewImage(mPreviewImageContainer, getActivity().getFilesDir(), "test.jpg");
+        super.onResume();
     }
 
     @Override
@@ -182,6 +203,7 @@ public class MagnifierFragment extends Fragment {
     }
 
     private void captureScreen() {
+        mPreviewImage = new PreviewImage(mPreviewImageContainer, getActivity().getFilesDir());
         mPreviewImage.capture(mFrozenImage, mParameters.getPreviewSize());
     }
 
@@ -197,7 +219,7 @@ public class MagnifierFragment extends Fragment {
                 showImagePreview();
                 startCameraPreview();
             }
-            return super.onFling(e1, e2, velocityX, velocityY);
+            return true;
         }
 
         @Override
@@ -205,7 +227,6 @@ public class MagnifierFragment extends Fragment {
             if (mFrozen) {
                 startCameraPreview();
             } else {
-                mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
                 mCamera.autoFocus(new Camera.AutoFocusCallback() {
                     @Override
                     public void onAutoFocus(boolean success, Camera camera) {
@@ -222,8 +243,18 @@ public class MagnifierFragment extends Fragment {
                     }
                 });
             }
-            return false;
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            Fragment fragment = new ListViewFragment();
+            fm.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
-
 }
