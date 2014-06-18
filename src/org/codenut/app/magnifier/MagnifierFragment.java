@@ -23,7 +23,6 @@ public class MagnifierFragment extends Fragment {
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private ImageView mPreviewImageContainer;
-    private PreviewImage mPreviewImage;
     private boolean mFrozen = false;
     private YuvImage mFrozenImage;
     private GestureDetector mGestureDetector;
@@ -201,21 +200,21 @@ public class MagnifierFragment extends Fragment {
         }
     }
 
-    private void captureScreen() {
-        mPreviewImage = new PreviewImage(mPreviewImageContainer, getActivity().getFilesDir());
-        mPreviewImage.capture(mFrozenImage, mParameters.getPreviewSize());
+    private void captureScreen(final PreviewImage previewImage) {
+        previewImage.capture(mFrozenImage, mParameters.getPreviewSize());
     }
 
-    private void showImagePreview() {
-        mPreviewImage.preview();
+    private void showImagePreview(final PreviewImage previewImage) {
+        previewImage.preview();
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (mFrozen) {
-                captureScreen();
-                showImagePreview();
+                PreviewImage previewImage = new PreviewImage(mPreviewImageContainer, getActivity().getFilesDir());
+                captureScreen(previewImage);
+                showImagePreview(previewImage);
                 startCameraPreview();
             }
             return true;

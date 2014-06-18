@@ -15,7 +15,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class PreviewImage {
@@ -25,7 +26,7 @@ public class PreviewImage {
     private String mName;
 
     public PreviewImage(final ImageView container, final File directory) {
-        this(container, directory, UUID.randomUUID().toString() + ".jpg");
+        this(container, directory, new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S").format(new Date()) + ".jpg");
     }
 
     public PreviewImage(final ImageView container, final File directory, final String name) {
