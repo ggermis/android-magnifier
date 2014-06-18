@@ -27,7 +27,7 @@
             android:layout_margin="4dp"
             android:textOn="light"
             android:textOff="dark"
-            android:alpha=".6"
+            android:alpha=".8"
             android:layout_alignParentRight="true"
             android:saveEnabled="false"/>
 
@@ -37,7 +37,7 @@
             android:layout_height="match_parent"
             android:layout_margin="4dp"
             android:progress="75"
-            android:alpha=".6"
+            android:alpha=".8"
             android:layout_alignParentRight="true"
             android:layout_below="@id/button_light"
             android:saveEnabled="false"/>
@@ -50,7 +50,7 @@
             android:textOn="inverse"
             android:textOff="normal"
             android:layout_toLeftOf="@id/button_light"
-            android:alpha=".6"
+            android:alpha=".8"
             android:saveEnabled="false"/>
 
     <Switch
@@ -60,7 +60,7 @@
             android:layout_margin="4dp"
             android:textOn="auto"
             android:textOff="macro"
-            android:alpha=".6"
+            android:alpha=".8"
             android:layout_toLeftOf="@id/button_negative"
             android:saveEnabled="false"/>
 

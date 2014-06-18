@@ -1,11 +1,17 @@
 package org.codenut.app.magnifier;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -58,18 +64,35 @@ public class ListViewFragment extends ListFragment {
         public ListItemAdapter(ArrayList<File> files) {
             super(getActivity(), 0, files);
             setNotifyOnChange(true);
+
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_file, null);
+                ListItemViewHolder holder = new ListItemViewHolder();
+                holder.imageView = (ImageView) convertView.findViewById(R.id.list_item_image);
+                convertView.setTag(holder);
             }
 
-            File file = getItem(position);
+            final ListItemViewHolder holder = (ListItemViewHolder) convertView.getTag();
+            final File file = getItem(position);
+            new AsyncTask<ListItemViewHolder, Void, Bitmap>() {
+                @Override
+                protected Bitmap doInBackground(ListItemViewHolder... params) {
+                    WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                    Display display = wm.getDefaultDisplay();
+                    Point size = new Point();
+                    display.getSize(size);
+                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), size.x, size.y);
+                }
 
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.list_item_image);
-            imageView.setImageBitmap(BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), 800, 600));
+                @Override
+                protected void onPostExecute(Bitmap bitmap) {
+                    holder.imageView.setImageBitmap(bitmap);
+                }
+            }.execute(holder);
 
             return convertView;
         }
@@ -78,6 +101,10 @@ public class ListViewFragment extends ListFragment {
         public void remove(File file) {
             file.delete();
             super.remove(file);
+        }
+
+        private class ListItemViewHolder {
+            ImageView imageView;
         }
     }
 }
