@@ -27,6 +27,7 @@
             android:layout_gravity="right"
             style="@style/flashToggleButton"
             android:layout_alignParentRight="true"
+            android:saveEnabled="false"
             android:background="@drawable/ic_flash_toggle_bg"/>
 
     <android.widget.VerticalSeekBar
@@ -40,13 +41,13 @@
             android:layout_below="@id/toggleFlashButton"
             android:saveEnabled="false"/>
 
-
     <ToggleButton
             android:id="@+id/toggleNegativeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             style="@style/negativeToggleButton"
+            android:saveEnabled="false"
             android:background="@drawable/ic_negative_toggle_bg"
             android:layout_toLeftOf="@id/toggleFlashButton"/>
 
@@ -56,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             style="@style/focusToggleButton"
+            android:saveEnabled="false"
             android:background="@drawable/ic_focus_toggle_bg"
             android:layout_toLeftOf="@id/toggleNegativeButton"/>
 

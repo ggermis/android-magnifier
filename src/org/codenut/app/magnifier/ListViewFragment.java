@@ -34,9 +34,9 @@ public class ListViewFragment extends ListFragment {
         mAdapter = new ListItemAdapter(mFiles);
         setListAdapter(mAdapter);
 
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
                 adb.setTitle("Deleting Image");
                 adb.setMessage("Are you sure you ?");
@@ -48,6 +48,7 @@ public class ListViewFragment extends ListFragment {
                     }
                 });
                 adb.show();
+                return true;
             }
         });
     }
@@ -101,7 +102,7 @@ public class ListViewFragment extends ListFragment {
 
         @Override
         public void remove(File file) {
-            if ( file.delete() ) {
+            if (file.delete()) {
                 super.remove(file);
             }
         }
