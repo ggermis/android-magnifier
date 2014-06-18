@@ -101,8 +101,9 @@ public class ListViewFragment extends ListFragment {
 
         @Override
         public void remove(File file) {
-            file.delete();
-            super.remove(file);
+            if ( file.delete() ) {
+                super.remove(file);
+            }
         }
 
         private class ListItemViewHolder {

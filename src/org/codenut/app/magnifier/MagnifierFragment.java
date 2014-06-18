@@ -53,7 +53,7 @@ public class MagnifierFragment extends Fragment {
             public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
                 if (mCamera == null) return;
 
-                Camera.Size s = getBestSupportedSize(mParameters.getSupportedPreviewSizes(), w, h);
+                Camera.Size s = getOptimalPreviewSize(mParameters.getSupportedPreviewSizes(), w, h);
                 mParameters.setPreviewSize(s.width, s.height);
                 if (mParameters.isZoomSupported()) {
                     mParameters.setZoom(mZoomSlider.getCurrentValue());
@@ -169,21 +169,35 @@ public class MagnifierFragment extends Fragment {
         }
     }
 
-    /**
-     * A simple algorithm to get the largest size available.
-     * For a more robust version, see CameraPreview.java in the ApiDemos sample app from Android.
-     */
-    private Camera.Size getBestSupportedSize(List<Camera.Size> sizes, int width, int height) {
-        Camera.Size bestSize = sizes.get(0);
-        int largestArea = bestSize.width * bestSize.height;
-        for (Camera.Size s : sizes) {
-            int area = s.width * s.height;
-            if (area > largestArea) {
-                bestSize = s;
-                largestArea = area;
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+        final double ASPECT_TOLERANCE = 0.1;
+        double targetRatio = (double) w / h;
+        if (sizes == null) return null;
+
+        Camera.Size optimalSize = null;
+        double minDiff = Double.MAX_VALUE;
+
+        // Try to find an size match aspect ratio and size
+        for (Camera.Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
+            if (Math.abs(size.height - h) < minDiff) {
+                optimalSize = size;
+                minDiff = Math.abs(size.height - h);
             }
         }
-        return bestSize;
+
+        // Cannot find the one match the aspect ratio, ignore the requirement
+        if (optimalSize == null) {
+            minDiff = Double.MAX_VALUE;
+            for (Camera.Size size : sizes) {
+                if (Math.abs(size.height - h) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.height - h);
+                }
+            }
+        }
+        return optimalSize;
     }
 
     private void stopCameraPreview() {
@@ -206,14 +220,14 @@ public class MagnifierFragment extends Fragment {
     }
 
     private void showImagePreview(final PreviewImage previewImage) {
-        previewImage.preview();
+        previewImage.preview(mPreviewImageContainer);
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (mFrozen) {
-                PreviewImage previewImage = new PreviewImage(mPreviewImageContainer, getActivity().getFilesDir());
+                PreviewImage previewImage = new PreviewImage(getActivity().getFilesDir());
                 captureScreen(previewImage);
                 showImagePreview(previewImage);
                 startCameraPreview();

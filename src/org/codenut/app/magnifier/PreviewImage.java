@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
-import android.os.Handler;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -21,15 +21,13 @@ import java.util.Date;
 public class PreviewImage {
     private static final int ANIMATION_DURATION = 2000;
     private File mDirectory;
-    private ImageView mContainer;
     private String mName;
 
-    public PreviewImage(final ImageView container, final File directory) {
-        this(container, directory, new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S").format(new Date()) + ".jpg");
+    public PreviewImage(final File directory) {
+        this(directory, new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S").format(new Date()) + ".jpg");
     }
 
-    public PreviewImage(final ImageView container, final File directory, final String name) {
-        mContainer = container;
+    public PreviewImage(final File directory, final String name) {
         mDirectory = directory;
         mName = name;
     }
@@ -71,15 +69,18 @@ public class PreviewImage {
         }
     }
 
-    public void preview() {
-        fadeIn(asBitmap());
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+    public void preview(final ImageView container) {
+        new AsyncTask<Void, Void, Bitmap>() {
             @Override
-            public void run() {
-                fadeOut();
+            protected Bitmap doInBackground(Void... params) {
+                return asBitmap();
             }
-        }, ANIMATION_DURATION);
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                applyFadeEffect(container, bitmap);
+            }
+        }.execute();
     }
 
     private String getName() {
@@ -95,7 +96,7 @@ public class PreviewImage {
         return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
     }
 
-    private void fadeIn(final Bitmap bitmap) {
+    private void applyFadeEffect(final ImageView container, final Bitmap bitmap) {
         Animation fadeIn = new AlphaAnimation(0.00f, 1.00f);
         fadeIn.setDuration(ANIMATION_DURATION);
         fadeIn.setAnimationListener(new Animation.AnimationListener() {
@@ -109,13 +110,14 @@ public class PreviewImage {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                fadeOut(container);
             }
         });
-        mContainer.setImageBitmap(bitmap);
-        mContainer.startAnimation(fadeIn);
+        container.setImageBitmap(bitmap);
+        container.startAnimation(fadeIn);
     }
 
-    private void fadeOut() {
+    private void fadeOut(final ImageView container) {
         Animation fadeOut = new AlphaAnimation(1.00f, 0.00f);
         fadeOut.setDuration(ANIMATION_DURATION);
         fadeOut.setAnimationListener(new Animation.AnimationListener() {
@@ -129,9 +131,9 @@ public class PreviewImage {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mContainer.setVisibility(View.GONE);
+                container.setVisibility(View.GONE);
             }
         });
-        mContainer.startAnimation(fadeOut);
+        container.startAnimation(fadeOut);
     }
 }
