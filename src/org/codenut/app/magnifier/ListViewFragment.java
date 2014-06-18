@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class ListViewFragment extends ListFragment {
     private ArrayList<File> mFiles;
@@ -52,12 +53,14 @@ public class ListViewFragment extends ListFragment {
     }
 
     private ArrayList<File> findFiles() {
-        return new ArrayList<File>(Arrays.asList(getActivity().getFilesDir().listFiles(new FilenameFilter() {
+        File[] files = getActivity().getFilesDir().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String filename) {
                 return filename.endsWith(".jpg");
             }
-        })));
+        });
+        Arrays.sort(files, Collections.reverseOrder());
+        return new ArrayList<File>(Arrays.asList(files));
     }
 
     private class ListItemAdapter extends ArrayAdapter<File> {
