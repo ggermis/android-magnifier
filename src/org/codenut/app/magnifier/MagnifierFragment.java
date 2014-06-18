@@ -22,7 +22,6 @@ public class MagnifierFragment extends Fragment {
     private static final String TAG = "org.codenut.app.magnifier";
     private Camera mCamera;
     private Camera.Parameters mParameters;
-    private SurfaceHolder mHolder;
     private ImageView mPreviewImageContainer;
     private PreviewImage mPreviewImage;
     private boolean mFrozen = false;
@@ -35,9 +34,9 @@ public class MagnifierFragment extends Fragment {
         View v = inflater.inflate(R.layout.camera_fragment, parent, false);
 
         final SurfaceView surfaceView = (SurfaceView) v.findViewById(R.id.camera_surfaceView);
-        mHolder = surfaceView.getHolder();
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        mHolder.addCallback(new SurfaceHolder.Callback() {
+        SurfaceHolder holder = surfaceView.getHolder();
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        holder.addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
                 if (mCamera != null) {
                     try {

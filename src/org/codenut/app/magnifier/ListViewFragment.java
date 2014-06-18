@@ -39,11 +39,11 @@ public class ListViewFragment extends ListFragment {
                 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
                 adb.setTitle("Deleting Image");
                 adb.setMessage("Are you sure you ?");
-                final int positionToRemove = position;
+                final File fileToRemove = mFiles.get(position);
                 adb.setNegativeButton("Cancel", null);
                 adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mAdapter.remove(mFiles.get(positionToRemove));
+                        mAdapter.remove(fileToRemove);
                     }
                 });
                 adb.show();
@@ -70,7 +70,7 @@ public class ListViewFragment extends ListFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_file, null);
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.image_list_item, null);
                 ListItemViewHolder holder = new ListItemViewHolder();
                 holder.imageView = (ImageView) convertView.findViewById(R.id.list_item_image);
                 convertView.setTag(holder);

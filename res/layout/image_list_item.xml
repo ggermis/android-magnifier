@@ -12,5 +12,4 @@
             android:paddingLeft="4dp"
             android:layout_alignParentLeft="true"/>
 
-
 </RelativeLayout>
