@@ -9,10 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.*;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.Switch;
+import android.widget.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -102,9 +99,8 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        final Switch lightButton = (Switch) v.findViewById(R.id.button_light);
-        lightButton.setEnabled(true);
-        lightButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final ToggleButton flashButton = (ToggleButton) v.findViewById(R.id.toggleFlashButton);
+        flashButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Toggle<String> flashToggle = new Toggle<String>(Camera.Parameters.FLASH_MODE_TORCH, Camera.Parameters.FLASH_MODE_OFF);
@@ -116,9 +112,8 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        final Switch negativeButton = (Switch) v.findViewById(R.id.button_negative);
-        negativeButton.setEnabled(true);
-        negativeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final ToggleButton negativeToggleButton = (ToggleButton) v.findViewById(R.id.toggleNegativeButton);
+        negativeToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Toggle<String> negativeToggle = new Toggle<String>(Camera.Parameters.EFFECT_NEGATIVE, Camera.Parameters.EFFECT_NONE);
@@ -130,9 +125,8 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        final Switch focusModeButton = (Switch) v.findViewById(R.id.focus_mode);
-        focusModeButton.setEnabled(true);
-        focusModeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final ToggleButton focusToggleButton = (ToggleButton) v.findViewById(R.id.toggleFocusButton);
+        focusToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Toggle<String> focusModeToggle = new Toggle<String>(Camera.Parameters.FOCUS_MODE_AUTO, Camera.Parameters.FOCUS_MODE_MACRO);
@@ -143,6 +137,7 @@ public class MagnifierFragment extends Fragment {
                 }
             }
         });
+
         return v;
     }
 

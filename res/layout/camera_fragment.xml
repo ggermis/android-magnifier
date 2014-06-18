@@ -20,16 +20,14 @@
             android:visibility="invisible"
             />
 
-    <Switch
-            android:id="@+id/button_light"
+    <ToggleButton
+            android:id="@+id/toggleFlashButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:textOn="light"
-            android:textOff="dark"
-            android:alpha=".8"
+            android:layout_gravity="right"
+            style="@style/flashToggleButton"
             android:layout_alignParentRight="true"
-            android:saveEnabled="false"/>
+            android:background="@drawable/ic_flash_toggle_bg"/>
 
     <android.widget.VerticalSeekBar
             android:id="@+id/zoom_control"
@@ -39,29 +37,26 @@
             android:progress="75"
             android:alpha=".8"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/button_light"
+            android:layout_below="@id/toggleFlashButton"
             android:saveEnabled="false"/>
 
-    <Switch
-            android:id="@+id/button_negative"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:textOn="inverse"
-            android:textOff="normal"
-            android:layout_toLeftOf="@id/button_light"
-            android:alpha=".8"
-            android:saveEnabled="false"/>
 
-    <Switch
-            android:id="@+id/focus_mode"
+    <ToggleButton
+            android:id="@+id/toggleNegativeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:textOn="auto"
-            android:textOff="macro"
-            android:alpha=".8"
-            android:layout_toLeftOf="@id/button_negative"
-            android:saveEnabled="false"/>
+            android:layout_gravity="right"
+            style="@style/negativeToggleButton"
+            android:background="@drawable/ic_negative_toggle_bg"
+            android:layout_toLeftOf="@id/toggleFlashButton"/>
+
+    <ToggleButton
+            android:id="@+id/toggleFocusButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            style="@style/focusToggleButton"
+            android:background="@drawable/ic_focus_toggle_bg"
+            android:layout_toLeftOf="@id/toggleNegativeButton"/>
 
 </RelativeLayout>
