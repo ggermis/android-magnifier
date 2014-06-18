@@ -67,7 +67,6 @@ public class ListViewFragment extends ListFragment {
         public ListItemAdapter(ArrayList<File> files) {
             super(getActivity(), 0, files);
             setNotifyOnChange(true);
-
         }
 
         @Override

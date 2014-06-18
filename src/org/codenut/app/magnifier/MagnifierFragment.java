@@ -201,7 +201,8 @@ public class MagnifierFragment extends Fragment {
     }
 
     private void captureScreen(final PreviewImage previewImage) {
-        previewImage.capture(mFrozenImage, mParameters.getPreviewSize());
+        Camera.Size size = mParameters.getPreviewSize();
+        previewImage.capture(mFrozenImage, size.width, size.height);
     }
 
     private void showImagePreview(final PreviewImage previewImage) {

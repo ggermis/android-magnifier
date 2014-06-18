@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
-import android.hardware.Camera;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -35,16 +34,16 @@ public class PreviewImage {
         mName = name;
     }
 
-    public void capture(final YuvImage image, final Camera.Size size) {
+    public void capture(final YuvImage image, final int width, final int height) {
         ByteArrayOutputStream bos = null;
         FileOutputStream fos = null;
         try {
 
             Rect rectangle = new Rect();
-            rectangle.bottom = size.height;
+            rectangle.bottom = height;
             rectangle.top = 0;
             rectangle.left = 0;
-            rectangle.right = size.width;
+            rectangle.right = width;
 
             bos = new ByteArrayOutputStream();
             image.compressToJpeg(rectangle, 100, bos);
