@@ -39,7 +39,7 @@
             android:layout_height="match_parent"
             android:layout_margin="4dp"
             android:progress="75"
-            android:alpha=".8"
+            android:alpha=".6"
             android:layout_alignParentRight="true"
             android:layout_below="@id/toggleFlashButton"
             android:saveEnabled="false"/>
