@@ -22,9 +22,12 @@
 
     <ToggleButton
             android:id="@+id/toggleFlashButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="right"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
             style="@style/flashToggleButton"
             android:layout_alignParentRight="true"
             android:saveEnabled="false"
@@ -43,9 +46,11 @@
 
     <ToggleButton
             android:id="@+id/toggleNegativeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="right"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="4dp"
             style="@style/negativeToggleButton"
             android:saveEnabled="false"
             android:background="@drawable/ic_negative_toggle_bg"
@@ -53,9 +58,10 @@
 
     <ToggleButton
             android:id="@+id/toggleFocusButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="right"
+            android:layout_marginTop="4dp"
             style="@style/focusToggleButton"
             android:saveEnabled="false"
             android:background="@drawable/ic_focus_toggle_bg"
