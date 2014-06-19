@@ -213,7 +213,7 @@ public class MagnifierFragment extends Fragment {
         Camera.Size size = mParameters.getPreviewSize();
         previewImage.capture(mFrozenImage, size.width, size.height);
         Toast toast = Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
         toast.show();
     }
 
