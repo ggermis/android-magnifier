@@ -5,6 +5,7 @@ import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -102,39 +103,54 @@ public class MagnifierFragment extends Fragment {
         final ToggleButton flashButton = (ToggleButton) v.findViewById(R.id.toggleFlashButton);
         flashButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toggle<String> flashToggle = new Toggle<String>(Camera.Parameters.FLASH_MODE_TORCH, Camera.Parameters.FLASH_MODE_OFF);
-                mParameters.setFlashMode(flashToggle.toggle(isChecked));
-                mCamera.setParameters(mParameters);
-                if (mFrozen) {
-                    startCameraPreview();
-                }
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toggle<String> flashToggle = new Toggle<String>(Camera.Parameters.FLASH_MODE_TORCH, Camera.Parameters.FLASH_MODE_OFF);
+                        mParameters.setFlashMode(flashToggle.toggle(isChecked));
+                        mCamera.setParameters(mParameters);
+                        if (mFrozen) {
+                            startCameraPreview();
+                        }
+                    }
+                });
             }
         });
 
         final ToggleButton negativeToggleButton = (ToggleButton) v.findViewById(R.id.toggleNegativeButton);
         negativeToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toggle<String> negativeToggle = new Toggle<String>(Camera.Parameters.EFFECT_NEGATIVE, Camera.Parameters.EFFECT_NONE);
-                mParameters.setColorEffect(negativeToggle.toggle(isChecked));
-                mCamera.setParameters(mParameters);
-                if (mFrozen) {
-                    startCameraPreview();
-                }
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toggle<String> negativeToggle = new Toggle<String>(Camera.Parameters.EFFECT_NEGATIVE, Camera.Parameters.EFFECT_NONE);
+                        mParameters.setColorEffect(negativeToggle.toggle(isChecked));
+                        mCamera.setParameters(mParameters);
+                        if (mFrozen) {
+                            startCameraPreview();
+                        }
+                    }
+                });
             }
         });
 
         final ToggleButton focusToggleButton = (ToggleButton) v.findViewById(R.id.toggleFocusButton);
         focusToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toggle<String> focusModeToggle = new Toggle<String>(Camera.Parameters.FOCUS_MODE_AUTO, Camera.Parameters.FOCUS_MODE_MACRO);
-                mParameters.setFocusMode(focusModeToggle.toggle(isChecked));
-                mCamera.setParameters(mParameters);
-                if (mFrozen) {
-                    startCameraPreview();
-                }
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toggle<String> focusModeToggle = new Toggle<String>(Camera.Parameters.FOCUS_MODE_AUTO, Camera.Parameters.FOCUS_MODE_MACRO);
+                        mParameters.setFocusMode(focusModeToggle.toggle(isChecked));
+                        mCamera.setParameters(mParameters);
+                        if (mFrozen) {
+                            startCameraPreview();
+                        }
+                    }
+                });
             }
         });
 
