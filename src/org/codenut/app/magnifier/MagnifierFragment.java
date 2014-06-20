@@ -178,6 +178,7 @@ public class MagnifierFragment extends Fragment {
                         .setCustomAnimations(R.animator.load_gallery, 0, 0, R.animator.unload_gallery)
                         .add(R.id.fragment_container, fragment)
                         .addToBackStack(null)
+                        .hide(MagnifierFragment.this)
                         .commit();
             }
         });

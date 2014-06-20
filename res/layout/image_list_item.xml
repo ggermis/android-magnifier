@@ -6,9 +6,10 @@
 
     <ImageView
             android:id="@+id/list_item_image"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_width="match_parent"
             android:contentDescription="image"
+            android:scaleType="centerCrop"
             android:layout_alignParentLeft="true"/>
 
 </RelativeLayout>

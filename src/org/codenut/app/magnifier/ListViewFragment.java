@@ -8,10 +8,9 @@ import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.view.Display;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.support.v4.app.ListFragmentLayout;
+import android.view.*;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -24,7 +23,18 @@ import java.util.Collections;
 
 public class ListViewFragment extends ListFragment {
     private ArrayList<File> mFiles;
+    private ImageView mSelectedImage;
     private ListItemAdapter mAdapter;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.image_list_fragment, container, false);
+        ListFragmentLayout.setupIds(view);
+
+        mSelectedImage = (ImageView) view.findViewById(R.id.selected);
+
+        return view;
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -34,6 +44,20 @@ public class ListViewFragment extends ListFragment {
         mAdapter = new ListItemAdapter(mFiles);
         setListAdapter(mAdapter);
 
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                File file = (File) getListAdapter().getItem(position);
+                WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                Display display = wm.getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                Bitmap bitmap = BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), size.x, size.y);
+                mSelectedImage.setImageBitmap(bitmap);
+                mSelectedImage.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.load_selected_image));
+                mSelectedImage.setVisibility(View.VISIBLE);
+            }
+        });
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -49,6 +73,15 @@ public class ListViewFragment extends ListFragment {
                 });
                 adb.show();
                 return true;
+            }
+        });
+
+        mSelectedImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getListView().startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.load_selected_image));
+                mSelectedImage.setImageDrawable(null);
+                mSelectedImage.setVisibility(View.GONE);
             }
         });
     }
@@ -106,9 +139,10 @@ public class ListViewFragment extends ListFragment {
                 super.remove(file);
             }
         }
-
-        private class ListItemViewHolder {
-            ImageView imageView;
-        }
     }
+
+    private class ListItemViewHolder {
+        ImageView imageView;
+    }
+
 }
