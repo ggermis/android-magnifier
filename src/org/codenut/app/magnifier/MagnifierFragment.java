@@ -21,8 +21,6 @@ public class MagnifierFragment extends Fragment {
     private static final String TAG = "org.codenut.app.magnifier";
     private Camera mCamera;
     private Camera.Parameters mParameters;
-    private PreviewImage mPreviewImage;
-    private ImageView mPreviewImageContainer;
     private PreviewImage mCapturedImage;
     private ImageView mCapturedImageContainer;
     private boolean mFrozen = false;
@@ -78,7 +76,6 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        mPreviewImageContainer = (ImageView) v.findViewById(R.id.preview);
         mCapturedImageContainer = (ImageView) v.findViewById(R.id.capture);
         mCapturedImageContainer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -252,14 +249,6 @@ public class MagnifierFragment extends Fragment {
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
                 toast.show();
                 startCameraPreview();
-            } else {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                Fragment fragment = new ListViewFragment();
-                fm.beginTransaction()
-                        .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
-                        .replace(R.id.fragment_container, fragment)
-                        .addToBackStack(null)
-                        .commit();
             }
             return true;
         }
