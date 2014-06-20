@@ -3,7 +3,6 @@ package org.codenut.app.magnifier;
 import android.graphics.ImageFormat;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +11,10 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.*;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.ToggleButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -199,7 +201,6 @@ public class MagnifierFragment extends Fragment {
         mZoomSlider = new Slider(mParameters.getMaxZoom());
         super.onResume();
     }
-
 
     @Override
     public void onPause() {

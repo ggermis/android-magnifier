@@ -67,7 +67,7 @@ public class PreviewImage {
         return mName;
     }
 
-    private File getFullPath() {
+    public File getFullPath() {
         return new File(mDirectory, getName());
     }
 }

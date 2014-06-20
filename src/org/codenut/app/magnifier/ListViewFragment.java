@@ -7,10 +7,11 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.ListFragmentLayout;
 import android.view.*;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -49,15 +50,13 @@ public class ListViewFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 File file = (File) getListAdapter().getItem(position);
-                WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-                Display display = wm.getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                Bitmap bitmap = BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), size.x, size.y);
-                mSelectedImage.setImageBitmap(bitmap);
-                mSelectedImage.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.load_selected_image));
-                mSelectedImage.setVisibility(View.VISIBLE);
-                mSelectedItem = position;
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                Fragment fragment = ImagePreviewFragment.newInstance(file);
+                fm.beginTransaction()
+                        .setCustomAnimations(R.animator.load_gallery, R.animator.unload_gallery, R.animator.load_gallery, R.animator.unload_gallery)
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss();
             }
         });
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -68,21 +67,24 @@ public class ListViewFragment extends ListFragment {
             }
         });
 
-        mSelectedImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getListView().startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.load_selected_image));
-                mSelectedImage.setImageDrawable(null);
-                mSelectedImage.setVisibility(View.GONE);
-            }
-        });
-        mSelectedImage.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showDeleteAlertBox(mSelectedItem);
-                return true;
-            }
-        });
+        mSelectedImage.setScaleType(ImageView.ScaleType.MATRIX);
+        mSelectedImage.setOnTouchListener(new ZoomManager());
+
+//        mSelectedImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getListView().startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.load_selected_image));
+//                mSelectedImage.setImageDrawable(null);
+//                mSelectedImage.setVisibility(View.GONE);
+//            }
+//        });
+//        mSelectedImage.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                showDeleteAlertBox(mSelectedItem);
+//                return true;
+//            }
+//        });
     }
 
     private void showDeleteAlertBox(final int position) {
