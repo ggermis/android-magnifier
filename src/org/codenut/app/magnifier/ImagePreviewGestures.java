@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-public class ZoomManager implements View.OnTouchListener {
+public class ImagePreviewGestures implements View.OnTouchListener {
     static final int NONE = 0;
     static final int DRAG = 1;
     static final int ZOOM = 2;

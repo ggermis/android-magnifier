@@ -68,7 +68,7 @@ public class ListViewFragment extends ListFragment {
         });
 
         mSelectedImage.setScaleType(ImageView.ScaleType.MATRIX);
-        mSelectedImage.setOnTouchListener(new ZoomManager());
+        mSelectedImage.setOnTouchListener(new ImagePreviewGestures());
 
 //        mSelectedImage.setOnClickListener(new View.OnClickListener() {
 //            @Override

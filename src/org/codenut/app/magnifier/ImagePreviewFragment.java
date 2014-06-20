@@ -28,7 +28,7 @@ public class ImagePreviewFragment extends Fragment {
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);
         preview.setScaleType(ImageView.ScaleType.MATRIX);
-        preview.setOnTouchListener(new ZoomManager());
+        preview.setOnTouchListener(new ImagePreviewGestures());
 
         WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
