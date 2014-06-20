@@ -177,7 +177,7 @@ public class MagnifierFragment extends Fragment {
             public void onClick(View v) {
                 stopCameraPreview();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                Fragment fragment = new ListViewFragment();
+                Fragment fragment = new ImageListFragment();
                 fm.beginTransaction()
                         .setCustomAnimations(R.animator.load_gallery, R.animator.unload_gallery, R.animator.load_gallery, R.animator.unload_gallery)
                         .replace(R.id.fragment_container, fragment)

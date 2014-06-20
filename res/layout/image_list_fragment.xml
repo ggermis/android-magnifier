@@ -36,12 +36,4 @@
         </ListView>
     </FrameLayout>
 
-    <ImageView
-            android:id="@+id/selected"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="capture"
-            android:background="#000000"
-            android:visibility="invisible"/>
-
 </RelativeLayout>

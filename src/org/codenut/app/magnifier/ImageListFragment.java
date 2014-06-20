@@ -22,18 +22,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class ListViewFragment extends ListFragment {
+public class ImageListFragment extends ListFragment {
     private ArrayList<File> mFiles;
-    private ImageView mSelectedImage;
-    private int mSelectedItem;
     private ListItemAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.image_list_fragment, container, false);
         ListFragmentLayout.setupIds(view);
-
-        mSelectedImage = (ImageView) view.findViewById(R.id.selected);
 
         return view;
     }
@@ -62,28 +58,20 @@ public class ListViewFragment extends ListFragment {
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showDeleteAlertBox(position);
+                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+                adb.setTitle("Deleting Image");
+                adb.setMessage("Are you sure you ?");
+                final File fileToRemove = mFiles.get(position);
+                adb.setNegativeButton("Cancel", null);
+                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAdapter.remove(fileToRemove);
+                    }
+                });
+                adb.show();
                 return true;
             }
         });
-
-        mSelectedImage.setScaleType(ImageView.ScaleType.MATRIX);
-        mSelectedImage.setOnTouchListener(new ImagePreviewGestures());
-    }
-
-    private void showDeleteAlertBox(final int position) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-        adb.setTitle("Deleting Image");
-        adb.setMessage("Are you sure you ?");
-        final File fileToRemove = mFiles.get(position);
-        adb.setNegativeButton("Cancel", null);
-        adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                mAdapter.remove(fileToRemove);
-                mSelectedImage.callOnClick();
-            }
-        });
-        adb.show();
     }
 
     private ArrayList<File> findFiles() {
