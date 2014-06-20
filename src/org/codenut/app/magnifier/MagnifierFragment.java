@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.*;
+import android.view.animation.AnimationUtils;
 import android.widget.*;
 
 import java.io.IOException;
@@ -20,8 +21,10 @@ public class MagnifierFragment extends Fragment {
     private static final String TAG = "org.codenut.app.magnifier";
     private Camera mCamera;
     private Camera.Parameters mParameters;
+    private PreviewImage mPreviewImage;
     private ImageView mPreviewImageContainer;
-    private ImageView mCaptureImageContainer;
+    private PreviewImage mCapturedImage;
+    private ImageView mCapturedImageContainer;
     private boolean mFrozen = false;
     private YuvImage mFrozenImage;
     private GestureDetector mGestureDetector;
@@ -76,14 +79,14 @@ public class MagnifierFragment extends Fragment {
         });
 
         mPreviewImageContainer = (ImageView) v.findViewById(R.id.preview);
-        mCaptureImageContainer = (ImageView) v.findViewById(R.id.capture);
-        mCaptureImageContainer.setOnLongClickListener(new View.OnLongClickListener() {
+        mCapturedImageContainer = (ImageView) v.findViewById(R.id.capture);
+        mCapturedImageContainer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 return false;
             }
         });
-        mCaptureImageContainer.setOnTouchListener(new View.OnTouchListener() {
+        mCapturedImageContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return mGestureDetector.onTouchEvent(event);
@@ -239,26 +242,24 @@ public class MagnifierFragment extends Fragment {
         }
     }
 
-    private void captureScreen(final PreviewImage previewImage) {
-        Camera.Size size = mParameters.getPreviewSize();
-        previewImage.capture(mFrozenImage, size.width, size.height);
-        Toast toast = Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
-    }
-
-    private void showImagePreview(final PreviewImage previewImage) {
-        previewImage.preview(mPreviewImageContainer);
-    }
-
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (mFrozen) {
-                PreviewImage previewImage = new PreviewImage(getActivity().getFilesDir());
-                captureScreen(previewImage);
-                showImagePreview(previewImage);
+                mCapturedImage.save();
+                mCapturedImageContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.scale));
+                Toast toast = Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+                toast.show();
                 startCameraPreview();
+            } else {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                Fragment fragment = new ListViewFragment();
+                fm.beginTransaction()
+                        .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
             }
             return true;
         }
@@ -278,6 +279,8 @@ public class MagnifierFragment extends Fragment {
                                     Camera.Size size = mParameters.getPreviewSize();
                                     mFrozenImage = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
                                     stopCameraPreview();
+                                    mCapturedImage = new PreviewImage(getActivity().getFilesDir());
+                                    mCapturedImageContainer.setImageBitmap(BitmapUtil.convert(mCapturedImage.capture(mFrozenImage, size.width, size.height).toByteArray()));
                                 }
                             });
                         }

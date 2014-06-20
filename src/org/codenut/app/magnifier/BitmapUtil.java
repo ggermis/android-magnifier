@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 
 public class BitmapUtil {
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -38,5 +38,9 @@ public class BitmapUtil {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(path, options);
+    }
+
+    public static Bitmap convert(final byte[] bytes) {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }
