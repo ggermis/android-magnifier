@@ -3,6 +3,7 @@ package org.codenut.app.magnifier;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.*;
@@ -24,18 +25,27 @@ public class ImagePreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.image_preview_fragment, container, false);
 
-        final File file = (File)getArguments().getSerializable("preview");
+        final File file = (File) getArguments().getSerializable("preview");
 
-        ImageView preview = (ImageView) v.findViewById(R.id.preview);
+        final ImageView preview = (ImageView) v.findViewById(R.id.preview);
         preview.setScaleType(ImageView.ScaleType.MATRIX);
         preview.setOnTouchListener(new ImagePreviewGestures());
 
-        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        Bitmap bitmap = BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), size.x, size.y);
-        preview.setImageBitmap(bitmap);
+        new AsyncTask<File, Void, Bitmap>() {
+            @Override
+            protected Bitmap doInBackground(File... params) {
+                WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                Display display = wm.getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), size.x, size.y);
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                preview.setImageBitmap(bitmap);
+            }
+        }.execute(file);
 
         return v;
     }
