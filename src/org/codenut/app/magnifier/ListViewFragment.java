@@ -69,22 +69,6 @@ public class ListViewFragment extends ListFragment {
 
         mSelectedImage.setScaleType(ImageView.ScaleType.MATRIX);
         mSelectedImage.setOnTouchListener(new ImagePreviewGestures());
-
-//        mSelectedImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getListView().startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.load_selected_image));
-//                mSelectedImage.setImageDrawable(null);
-//                mSelectedImage.setVisibility(View.GONE);
-//            }
-//        });
-//        mSelectedImage.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                showDeleteAlertBox(mSelectedItem);
-//                return true;
-//            }
-//        });
     }
 
     private void showDeleteAlertBox(final int position) {
