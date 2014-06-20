@@ -261,9 +261,6 @@ public class MagnifierFragment extends Fragment {
             if (mFrozen) {
                 mCapturedImage.save();
                 mCapturedImageContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.save_captured_image));
-                Toast toast = Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-                toast.show();
                 startCameraPreview();
             }
             return true;
