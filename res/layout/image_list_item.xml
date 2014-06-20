@@ -9,7 +9,7 @@
             android:layout_height="150dp"
             android:layout_width="match_parent"
             android:contentDescription="image"
-            android:scaleType="centerCrop"
+            android:scaleType="center"
             android:layout_alignParentLeft="true"/>
 
 </RelativeLayout>
