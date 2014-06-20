@@ -264,8 +264,6 @@ public class MagnifierFragment extends Fragment {
                 Toast toast = Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
                 toast.show();
-                MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.click);
-                mp.start();
                 startCameraPreview();
             }
             return true;
