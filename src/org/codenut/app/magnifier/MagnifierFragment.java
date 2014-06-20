@@ -278,8 +278,8 @@ public class MagnifierFragment extends Fragment {
             FragmentManager fm = getActivity().getSupportFragmentManager();
             Fragment fragment = new ListViewFragment();
             fm.beginTransaction()
+                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
                     .replace(R.id.fragment_container, fragment)
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                     .addToBackStack(null)
                     .commit();
         }
