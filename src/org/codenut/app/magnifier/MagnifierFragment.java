@@ -3,6 +3,7 @@ package org.codenut.app.magnifier;
 import android.graphics.ImageFormat;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -172,14 +173,14 @@ public class MagnifierFragment extends Fragment {
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopCameraPreview();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 Fragment fragment = new ListViewFragment();
                 fm.beginTransaction()
-                        .setCustomAnimations(R.animator.load_gallery, 0, 0, R.animator.unload_gallery)
-                        .add(R.id.fragment_container, fragment)
+                        .setCustomAnimations(R.animator.load_gallery, R.animator.unload_gallery, R.animator.load_gallery, R.animator.unload_gallery)
+                        .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
-                        .hide(MagnifierFragment.this)
-                        .commit();
+                        .commitAllowingStateLoss();
             }
         });
         return v;
@@ -198,6 +199,7 @@ public class MagnifierFragment extends Fragment {
         mZoomSlider = new Slider(mParameters.getMaxZoom());
         super.onResume();
     }
+
 
     @Override
     public void onPause() {
@@ -262,6 +264,8 @@ public class MagnifierFragment extends Fragment {
                 Toast toast = Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
                 toast.show();
+                MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.click);
+                mp.start();
                 startCameraPreview();
             }
             return true;
