@@ -21,6 +21,7 @@ public class MagnifierFragment extends Fragment {
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private ImageView mPreviewImageContainer;
+    private ImageView mCaptureImageContainer;
     private boolean mFrozen = false;
     private YuvImage mFrozenImage;
     private GestureDetector mGestureDetector;
@@ -75,6 +76,19 @@ public class MagnifierFragment extends Fragment {
         });
 
         mPreviewImageContainer = (ImageView) v.findViewById(R.id.preview);
+        mCaptureImageContainer = (ImageView) v.findViewById(R.id.capture);
+        mCaptureImageContainer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
+        mCaptureImageContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mGestureDetector.onTouchEvent(event);
+            }
+        });
 
         final SeekBar zoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
         zoomSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
