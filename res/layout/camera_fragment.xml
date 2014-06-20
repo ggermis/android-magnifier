@@ -64,4 +64,15 @@
             android:background="@drawable/ic_focus_toggle_bg"
             android:layout_toLeftOf="@id/toggleNegativeButton"/>
 
+    <ImageView
+            android:id="@+id/galleryButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/gallery"
+            android:contentDescription="gallery"
+            android:padding="4dp"
+            android:layout_margin="4dp"
+            android:background="#30000000"
+            />
+
 </RelativeLayout>

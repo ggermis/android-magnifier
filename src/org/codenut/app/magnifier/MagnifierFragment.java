@@ -168,6 +168,19 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
+        final ImageView galleryButton = (ImageView) v.findViewById(R.id.galleryButton);
+        galleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                Fragment fragment = new ListViewFragment();
+                fm.beginTransaction()
+                        .setCustomAnimations(R.animator.load_gallery, 0, 0, R.animator.unload_gallery)
+                        .add(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         return v;
     }
 
@@ -244,7 +257,7 @@ public class MagnifierFragment extends Fragment {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (mFrozen) {
                 mCapturedImage.save();
-                mCapturedImageContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.scale));
+                mCapturedImageContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.save_captured_image));
                 Toast toast = Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
                 toast.show();
@@ -277,17 +290,6 @@ public class MagnifierFragment extends Fragment {
                 });
             }
             return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            Fragment fragment = new ListViewFragment();
-            fm.beginTransaction()
-                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
         }
     }
 }
