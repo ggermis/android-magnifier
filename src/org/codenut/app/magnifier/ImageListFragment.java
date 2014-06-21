@@ -93,14 +93,16 @@ public class ImageListFragment extends ListFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            final ListItemViewHolder holder;
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.image_list_item, null);
-                ListItemViewHolder holder = new ListItemViewHolder();
+                holder = new ListItemViewHolder();
                 holder.imageView = (ImageView) convertView.findViewById(R.id.list_item_image);
                 convertView.setTag(holder);
+            } else {
+                holder = (ListItemViewHolder) convertView.getTag();
             }
 
-            final ListItemViewHolder holder = (ListItemViewHolder) convertView.getTag();
             holder.imageView.setImageDrawable(null);
             final File file = getItem(position);
             new AsyncTask<ListItemViewHolder, Void, Bitmap>() {
