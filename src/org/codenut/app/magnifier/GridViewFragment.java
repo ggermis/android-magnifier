@@ -93,16 +93,19 @@ public class GridViewFragment extends Fragment {
                 convertView = inflater.inflate(R.layout.grid_item, parent, false);
                 holder = new ViewHolder();
                 holder.imageView = (ImageView) convertView.findViewById(R.id.item);
+                holder.textView = (TextView) convertView.findViewById(R.id.file_name);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
 
             holder.imageView.setImageDrawable(null);
+            final String text  = file.getName().substring(0, 10) + " " + file.getName().substring(11, 19).replace('-', ':');
+            holder.textView.setText(text);
             new AsyncTask<Void, Void, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(Void... params) {
-                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), 200, 200);
+                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), 200, 150);
                 }
 
                 @Override
@@ -116,6 +119,7 @@ public class GridViewFragment extends Fragment {
 
         private class ViewHolder {
             public ImageView imageView;
+            public TextView textView;
         }
 
     }
