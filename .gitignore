@@ -1,3 +1,5 @@
 .idea
+*.apk
 gen/
 out/
+proguard_logs/
