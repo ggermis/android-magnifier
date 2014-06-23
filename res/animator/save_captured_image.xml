@@ -1,15 +1,15 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <scale android:fromXScale="1"
            android:fromYScale="1"
-           android:toXScale="32dp"
-           android:toYScale="32dp"
+           android:toXScale="36dp"
+           android:toYScale="36dp"
            android:duration="800"/>
 
     <translate
             android:fromXDelta="0"
             android:fromYDelta="0"
-            android:toXDelta="+4"
-            android:toYDelta="+4"
+            android:toXDelta="+8"
+            android:toYDelta="+8"
             android:duration="400"/>
 
     <alpha
