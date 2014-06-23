@@ -1,19 +1,19 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <scale android:fromXScale="1"
            android:fromYScale="1"
-           android:toXScale="36dp"
-           android:toYScale="36dp"
-           android:duration="800"/>
+           android:toXScale="0"
+           android:toYScale="0"
+           android:duration="600"/>
 
     <translate
             android:fromXDelta="0"
             android:fromYDelta="0"
-            android:toXDelta="+8"
-            android:toYDelta="+8"
-            android:duration="400"/>
+            android:toXDelta="+12"
+            android:toYDelta="+12"
+            android:duration="300"/>
 
     <alpha
             android:fromAlpha="1.0"
-            android:toAlpha="0.2"
-            android:duration="800"/>
+            android:toAlpha="0.5"
+            android:duration="600"/>
 </set>

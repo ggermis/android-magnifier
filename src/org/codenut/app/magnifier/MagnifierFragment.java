@@ -1,5 +1,6 @@
 package org.codenut.app.magnifier;
 
+import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
