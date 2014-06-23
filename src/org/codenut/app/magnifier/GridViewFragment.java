@@ -4,15 +4,11 @@ import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,12 +102,12 @@ public class GridViewFragment extends Fragment {
 
             holder.imageView.setImageDrawable(null);
 
-            final String text  = file.getName().substring(0, 10) + " " + file.getName().substring(11, 19).replace('-', ':');
+            final String text = file.getName().substring(0, 10) + " " + file.getName().substring(11, 19).replace('-', ':');
             holder.textView.setText(text);
             new AsyncTask<Void, Void, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(Void... params) {
-                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), 258, 155);
+                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), 258, 155); // TODO: fix hard-coded values
                 }
 
                 @Override
