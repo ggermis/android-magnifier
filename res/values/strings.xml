@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Magnifier</string>
+
+    <string name="gallery.empty">No images in gallery!</string>
 </resources>

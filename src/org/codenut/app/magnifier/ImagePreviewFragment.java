@@ -12,11 +12,12 @@ import android.widget.ImageView;
 import java.io.File;
 
 public class ImagePreviewFragment extends Fragment {
+    private static final String PARAM_PREVIEW_FILE = "preview.file";
 
     public static ImagePreviewFragment newInstance(final File file) {
         ImagePreviewFragment f = new ImagePreviewFragment();
         Bundle args = new Bundle();
-        args.putSerializable("preview", file);
+        args.putSerializable(PARAM_PREVIEW_FILE, file);
         f.setArguments(args);
         return f;
     }
@@ -25,7 +26,7 @@ public class ImagePreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.image_preview_fragment, container, false);
 
-        final File file = (File) getArguments().getSerializable("preview");
+        final File file = (File) getArguments().getSerializable(PARAM_PREVIEW_FILE);
 
         final ImageView preview = (ImageView) v.findViewById(R.id.preview);
         preview.setScaleType(ImageView.ScaleType.MATRIX);

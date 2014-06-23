@@ -9,7 +9,7 @@
             android:id="@+id/empty_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No image in gallery!"
+            android:text="@string/gallery.empty"
             android:layout_centerInParent="true"
             android:visibility="invisible"/>
 

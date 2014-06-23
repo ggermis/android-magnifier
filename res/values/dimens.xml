@@ -2,5 +2,5 @@
 <resources>
     <dimen name="gallery.item.width">170dp</dimen>
     <dimen name="gallery.item.height">140dp</dimen>
-    <dimen name="buttons.size">36dp</dimen>
+    <dimen name="buttons.size">32dp</dimen>
 </resources>
