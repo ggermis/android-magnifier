@@ -4,14 +4,16 @@
            android:toXScale="32dp"
            android:toYScale="32dp"
            android:duration="800"/>
+
     <translate
             android:fromXDelta="0"
             android:fromYDelta="0"
             android:toXDelta="+4"
             android:toYDelta="+4"
             android:duration="400"/>
+
     <alpha
             android:fromAlpha="1.0"
-            android:toAlpha="0.0"
+            android:toAlpha="0.2"
             android:duration="800"/>
 </set>

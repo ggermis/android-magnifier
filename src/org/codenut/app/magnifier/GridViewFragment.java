@@ -23,6 +23,7 @@ import java.util.List;
 
 public class GridViewFragment extends Fragment {
     private GridListAdapter mAdapter;
+    private TextView mEmpty;
 
     private ArrayList<File> findFiles() {
         File[] files = getActivity().getFilesDir().listFiles(new FilenameFilter() {
@@ -75,13 +76,29 @@ public class GridViewFragment extends Fragment {
             }
         });
 
+        mEmpty = (TextView) v.findViewById(R.id.empty_gallery);
+        showEmptyMessage();
+
         return v;
+    }
+
+    private void showEmptyMessage() {
+        if (mAdapter.getCount() == 0) {
+            mEmpty.setText("No images in gallery");
+            mEmpty.setVisibility(View.VISIBLE);
+        }
     }
 
     private class GridListAdapter extends ArrayAdapter<File> {
 
         public GridListAdapter(Context context, int textViewResourceId, List<File> objects) {
             super(context, textViewResourceId, objects);
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            showEmptyMessage();
         }
 
         @Override
@@ -121,6 +138,14 @@ public class GridViewFragment extends Fragment {
             }.execute();
 
             return convertView;
+        }
+
+
+        @Override
+        public void remove(File file) {
+            if (file.delete()) {
+                super.remove(file);
+            }
         }
 
         private class ViewHolder {
