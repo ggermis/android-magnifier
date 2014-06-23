@@ -100,6 +100,10 @@ public class GridViewFragment extends Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
+            final int width = (int)getActivity().getResources().getDimension(R.dimen.gallery_item_width);
+            final int height = (int)getActivity().getResources().getDimension(R.dimen.gallery_item_height);
+
+            holder.imageView.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
             holder.imageView.setImageDrawable(null);
 
             final String text = file.getName().substring(0, 10) + " " + file.getName().substring(11, 19).replace('-', ':');
@@ -107,7 +111,7 @@ public class GridViewFragment extends Fragment {
             new AsyncTask<Void, Void, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(Void... params) {
-                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), 258, 155); // TODO: fix hard-coded values
+                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), width, height);
                 }
 
                 @Override

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gallery.item.width">170dp</dimen>
+    <dimen name="gallery.item.height">140dp</dimen>
+</resources>
