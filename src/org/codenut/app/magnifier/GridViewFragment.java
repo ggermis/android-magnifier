@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +42,9 @@ public class GridViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        GridView gridView = new GridView(getActivity());
-        gridView.setNumColumns(3);
+        View v = inflater.inflate(R.layout.grid_view_fragment, container, false);
+
+        GridView gridView = (GridView) v.findViewById(R.id.grid_view);
 
         mAdapter = new GridListAdapter(getActivity(), R.layout.grid_item, findFiles());
         gridView.setAdapter(mAdapter);
@@ -74,7 +78,8 @@ public class GridViewFragment extends Fragment {
                 return true;
             }
         });
-        return gridView;
+
+        return v;
     }
 
     private class GridListAdapter extends ArrayAdapter<File> {
@@ -100,12 +105,13 @@ public class GridViewFragment extends Fragment {
             }
 
             holder.imageView.setImageDrawable(null);
+
             final String text  = file.getName().substring(0, 10) + " " + file.getName().substring(11, 19).replace('-', ':');
             holder.textView.setText(text);
             new AsyncTask<Void, Void, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(Void... params) {
-                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), 200, 150);
+                    return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), 258, 155);
                 }
 
                 @Override
