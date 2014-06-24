@@ -12,6 +12,15 @@
             android:toYDelta="+12"
             android:duration="600"/>
 
+    <rotate
+            android:fromDegrees="0"
+            android:interpolator="@android:anim/linear_interpolator"
+            android:toDegrees="360"
+            android:pivotX="25%"
+            android:pivotY="25%"
+            android:duration="600"
+            android:startOffset="0"/>
+
     <alpha
             android:fromAlpha="1.0"
             android:toAlpha="0.5"
