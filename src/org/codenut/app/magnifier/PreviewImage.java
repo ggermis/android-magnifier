@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class PreviewImage {
@@ -17,7 +18,7 @@ public class PreviewImage {
     private ByteArrayOutputStream mCapture;
 
     public PreviewImage(final File directory) {
-        this(directory, new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S").format(new Date()) + ".jpg");
+        this(directory, new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S", Locale.getDefault()).format(new Date()) + ".jpg");
     }
 
     public PreviewImage(final File directory, final String name) {

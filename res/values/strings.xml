@@ -6,6 +6,13 @@
 
     <string name="dialog.delete.title">Deleting image</string>
     <string name="dialog.delete.text">Are you sure?</string>
-    <string name="dialog.delete.button.ok">Ok</string>
+    <string name="dialog.delete.button.ok">OK</string>
     <string name="dialog.delete.button.cancel">Cancel</string>
+
+    <string name="camera_capture_content_description">capture</string>
+    <string name="camera_gallery_content_description">gallery</string>
+    <string name="grid_item_content_description">Picture</string>
+    <string name="list_item_content_description">Picture</string>
+    <string name="preview_content_description">Preview</string>
 </resources>
+

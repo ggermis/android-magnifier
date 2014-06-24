@@ -6,6 +6,12 @@
 
     <string name="dialog.delete.title">Afbeelding verwijderen</string>
     <string name="dialog.delete.text">Ben je zeker?</string>
-    <string name="dialog.delete.button.ok">Ok</string>
+    <string name="dialog.delete.button.ok">OK</string>
     <string name="dialog.delete.button.cancel">Annuleer</string>
+
+    <string name="camera_capture_content_description">Kapteer</string>
+    <string name="camera_gallery_content_description">Gallerij</string>
+    <string name="grid_item_content_description">Foto</string>
+    <string name="list_item_content_description">Foto</string>
+    <string name="preview_content_description">Voorbeeld</string>
 </resources>

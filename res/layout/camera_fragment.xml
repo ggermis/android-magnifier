@@ -13,7 +13,7 @@
             android:id="@+id/capture"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="capture"
+            android:contentDescription="@string/camera_capture_content_description"
             android:background="#000000"
             android:visibility="invisible"/>
 
@@ -27,8 +27,8 @@
 
         <ToggleButton
                 android:id="@+id/toggleFocusButton"
-                android:layout_width="@dimen/buttons.size"
-                android:layout_height="@dimen/buttons.size"
+                android:layout_width="@dimen/buttons_size"
+                android:layout_height="@dimen/buttons_size"
                 android:layout_margin="8dp"
                 style="@style/focusToggleButton"
                 android:saveEnabled="false"
@@ -36,8 +36,8 @@
 
         <ToggleButton
                 android:id="@+id/toggleNegativeButton"
-                android:layout_width="@dimen/buttons.size"
-                android:layout_height="@dimen/buttons.size"
+                android:layout_width="@dimen/buttons_size"
+                android:layout_height="@dimen/buttons_size"
                 android:layout_margin="8dp"
                 style="@style/negativeToggleButton"
                 android:saveEnabled="false"
@@ -45,8 +45,8 @@
 
         <ToggleButton
                 android:id="@+id/toggleFlashButton"
-                android:layout_width="@dimen/buttons.size"
-                android:layout_height="@dimen/buttons.size"
+                android:layout_width="@dimen/buttons_size"
+                android:layout_height="@dimen/buttons_size"
                 android:layout_margin="8dp"
                 style="@style/flashToggleButton"
                 android:saveEnabled="false"
@@ -67,10 +67,10 @@
 
     <ImageView
             android:id="@+id/galleryButton"
-            android:layout_width="@dimen/buttons.size"
-            android:layout_height="@dimen/buttons.size"
+            android:layout_width="@dimen/buttons_size"
+            android:layout_height="@dimen/buttons_size"
             android:src="@drawable/gallery"
-            android:contentDescription="gallery"
+            android:contentDescription="@string/camera_gallery_content_description"
             android:padding="4dp"
             android:layout_margin="8dp"
             android:background="@drawable/ic_toggle_background"

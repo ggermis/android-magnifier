@@ -2,7 +2,6 @@ package org.codenut.app.magnifier;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -37,9 +36,7 @@ public class ImagePreviewFragment extends Fragment {
             protected Bitmap doInBackground(File... params) {
                 WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
                 Display display = wm.getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), size.x, size.y);
+                return BitmapUtil.decodeSampledBitmapFromFile(file.getPath(), display.getWidth(), display.getHeight());
             }
 
             @Override

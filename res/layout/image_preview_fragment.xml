@@ -9,7 +9,7 @@
             android:id="@+id/preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="capture"
+            android:contentDescription="@string/preview_content_description"
             android:background="#000000"/>
 
 </LinearLayout>
