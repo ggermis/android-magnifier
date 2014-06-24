@@ -1,8 +1,8 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <scale android:fromXScale="1"
            android:fromYScale="1"
-           android:toXScale="0"
-           android:toYScale="0"
+           android:toXScale="@dimen/buttons.size"
+           android:toYScale="@dimen/buttons.size"
            android:duration="600"/>
 
     <translate
@@ -10,7 +10,7 @@
             android:fromYDelta="0"
             android:toXDelta="+12"
             android:toYDelta="+12"
-            android:duration="300"/>
+            android:duration="600"/>
 
     <alpha
             android:fromAlpha="1.0"
