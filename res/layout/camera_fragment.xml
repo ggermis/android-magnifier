@@ -32,7 +32,7 @@
                 android:layout_margin="8dp"
                 style="@style/focusToggleButton"
                 android:saveEnabled="false"
-                android:background="@drawable/ic_focus_toggle_bg"/>
+                android:background="@drawable/ic_focus_toggle_button"/>
 
         <ToggleButton
                 android:id="@+id/toggleNegativeButton"
@@ -41,7 +41,7 @@
                 android:layout_margin="8dp"
                 style="@style/negativeToggleButton"
                 android:saveEnabled="false"
-                android:background="@drawable/ic_negative_toggle_bg"/>
+                android:background="@drawable/ic_negative_toggle_button"/>
 
         <ToggleButton
                 android:id="@+id/toggleFlashButton"
@@ -50,7 +50,7 @@
                 android:layout_margin="8dp"
                 style="@style/flashToggleButton"
                 android:saveEnabled="false"
-                android:background="@drawable/ic_flash_toggle_bg"/>
+                android:background="@drawable/ic_flash_toggle_button"/>
     </LinearLayout>
 
 
@@ -73,7 +73,7 @@
             android:contentDescription="gallery"
             android:padding="4dp"
             android:layout_margin="8dp"
-            android:background="#30000000"
+            android:background="@drawable/ic_toggle_background"
             />
 
 </RelativeLayout>

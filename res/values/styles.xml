@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Widget.Button.FlashToggle" parent="android:Widget">
-        <item name="android:background">@drawable/ic_flash_toggle_bg</item>
+        <item name="android:background">@drawable/ic_flash_toggle_button</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
     </style>
 
@@ -13,7 +13,7 @@
 
 
     <style name="Widget.Button.NegativeToggle" parent="android:Widget">
-        <item name="android:background">@drawable/ic_negative_toggle_bg</item>
+        <item name="android:background">@drawable/ic_negative_toggle_button</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
     </style>
 
@@ -25,7 +25,7 @@
 
 
     <style name="Widget.Button.FocusToggle" parent="android:Widget">
-        <item name="android:background">@drawable/ic_focus_toggle_bg</item>
+        <item name="android:background">@drawable/ic_focus_toggle_button</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
     </style>
 
