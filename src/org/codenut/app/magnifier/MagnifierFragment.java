@@ -195,11 +195,11 @@ public class MagnifierFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+//            mCamera = Camera.open(0);
+//        } else {
             mCamera = Camera.open();
-        }
+//        }
         mParameters = mCamera.getParameters();
         mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
         mParameters.setPreviewFormat(ImageFormat.NV21);
