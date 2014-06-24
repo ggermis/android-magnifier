@@ -123,7 +123,7 @@ public class GridViewFragment extends Fragment {
             holder.imageView.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
             holder.imageView.setImageDrawable(null);
 
-            final String text = file.getName().substring(0, 10) + " " + file.getName().substring(11, 19).replace('-', ':');
+            final String text = PreviewImage.getDatePart(file) + " " + PreviewImage.getTimePart(file);
             holder.textView.setText(text);
             new AsyncTask<Void, Void, Bitmap>() {
                 @Override

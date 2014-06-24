@@ -70,4 +70,13 @@ public class PreviewImage {
     public File getFullPath() {
         return new File(mDirectory, getName());
     }
+
+
+    public static String getDatePart(final File file) {
+        return file.getName().substring(0, 10);
+    }
+
+    public static String getTimePart(final File file) {
+        return file.getName().substring(11, 19).replace('-', ':');
+    }
 }
