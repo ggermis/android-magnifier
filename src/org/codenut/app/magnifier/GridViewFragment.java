@@ -62,11 +62,11 @@ public class GridViewFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-                adb.setTitle("Deleting Image");
-                adb.setMessage("Are you sure you ?");
+                adb.setTitle(getString(R.string.dialog_delete_title));
+                adb.setMessage(getString(R.string.dialog_delete_text));
                 final File fileToRemove = mAdapter.getItem(position);
-                adb.setNegativeButton("Cancel", null);
-                adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+                adb.setNegativeButton(getString(R.string.dialog_delete_button_cancel), null);
+                adb.setPositiveButton(getString(R.string.dialog_delete_button_ok), new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mAdapter.remove(fileToRemove);
                     }
@@ -84,7 +84,7 @@ public class GridViewFragment extends Fragment {
 
     private void showEmptyMessage() {
         if (mAdapter.getCount() == 0) {
-            mEmpty.setText("No images in gallery");
+            mEmpty.setText(getString(R.string.gallery_empty));
             mEmpty.setVisibility(View.VISIBLE);
         }
     }

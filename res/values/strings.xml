@@ -3,4 +3,9 @@
     <string name="app_name">Magnifier</string>
 
     <string name="gallery.empty">No images in gallery!</string>
+
+    <string name="dialog.delete.title">Deleting image</string>
+    <string name="dialog.delete.text">Are you sure?</string>
+    <string name="dialog.delete.button.ok">Ok</string>
+    <string name="dialog.delete.button.cancel">Cancel</string>
 </resources>

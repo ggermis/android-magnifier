@@ -1,6 +1,5 @@
 package org.codenut.app.magnifier;
 
-import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
@@ -22,7 +21,7 @@ import java.util.List;
 
 
 public class MagnifierFragment extends Fragment {
-    private static final String TAG = "org.codenut.app.magnifier";
+    private static final String TAG = "MagnifierFragment";
     private Camera mCamera;
     private Camera.Parameters mParameters;
     private PreviewImage mCapturedImage;
