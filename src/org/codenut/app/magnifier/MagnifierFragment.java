@@ -25,6 +25,7 @@ public class MagnifierFragment extends Fragment {
     private boolean mFrozen = false;
     private GestureDetector mGestureDetector;
     private Slider mZoomSlider;
+    private VerticalSeekBar mSeekBar;
     private ToggleButton mFlashToggleButton;
     private ToggleButton mFocusToggleButton;
     private ToggleButton mNegativeToggleButton;
@@ -63,6 +64,9 @@ public class MagnifierFragment extends Fragment {
 
                 if (!CameraCapabilities.isFocusSupported(mParameters)) {
                     mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
+                }
+                if (!CameraCapabilities.isZoomSupported(mParameters)) {
+                    mSeekBar.setVisibility(View.GONE);
                 }
                 if (!CameraCapabilities.isFlashSupported(mParameters)) {
                     mFlashToggleButton.setVisibility(View.GONE);
@@ -105,8 +109,8 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        final SeekBar zoomSeeker = (SeekBar) v.findViewById(R.id.zoom_control);
-        zoomSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mSeekBar = (VerticalSeekBar) v.findViewById(R.id.zoom_control);
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (CameraCapabilities.isZoomSupported(mParameters)) {
