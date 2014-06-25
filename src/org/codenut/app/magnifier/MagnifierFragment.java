@@ -2,7 +2,6 @@ package org.codenut.app.magnifier;
 
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
-import android.media.MediaActionSound;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
