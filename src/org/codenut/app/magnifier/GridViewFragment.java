@@ -117,8 +117,8 @@ public class GridViewFragment extends Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            final int width = (int)getActivity().getResources().getDimension(R.dimen.gallery_item_width);
-            final int height = (int)getActivity().getResources().getDimension(R.dimen.gallery_item_height);
+            final int width = (int) getActivity().getResources().getDimension(R.dimen.gallery_item_width);
+            final int height = (int) getActivity().getResources().getDimension(R.dimen.gallery_item_height);
 
             holder.imageView.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
             holder.imageView.setImageDrawable(null);
@@ -139,7 +139,6 @@ public class GridViewFragment extends Fragment {
 
             return convertView;
         }
-
 
         @Override
         public void remove(File file) {

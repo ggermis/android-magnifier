@@ -2,12 +2,12 @@
 <resources>
     <string name="app_name">Vergrootglas</string>
 
-    <string name="gallery.empty">Geen afbeeldingen in gallerij!</string>
-
-    <string name="dialog.delete.title">Afbeelding verwijderen</string>
-    <string name="dialog.delete.text">Ben je zeker?</string>
-    <string name="dialog.delete.button.ok">OK</string>
-    <string name="dialog.delete.button.cancel">Annuleer</string>
+    <string name="gallery_empty">Geen afbeeldingen in gallerij!</string>
+    <string name="gallery_saved">Afbeelding opgeslagen</string>
+    <string name="dialog_delete_title">Afbeelding verwijderen</string>
+    <string name="dialog_delete_text">Ben je zeker?</string>
+    <string name="dialog_delete_button_ok">OK</string>
+    <string name="dialog_delete_button_cancel">Annuleer</string>
 
     <string name="camera_capture_content_description">Kapteer</string>
     <string name="camera_gallery_content_description">Gallerij</string>

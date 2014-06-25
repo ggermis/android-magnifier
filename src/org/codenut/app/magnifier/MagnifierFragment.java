@@ -1,8 +1,8 @@
 package org.codenut.app.magnifier;
 
 import android.graphics.ImageFormat;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.media.MediaActionSound;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,12 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.*;
-import android.view.animation.AnimationUtils;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.ToggleButton;
+import android.widget.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,12 +21,14 @@ public class MagnifierFragment extends Fragment {
     private static final String TAG = "MagnifierFragment";
     private Camera mCamera;
     private Camera.Parameters mParameters;
-    private PreviewImage mCapturedImage;
+    private PreviewImage mPreviewImage;
     private ImageView mCapturedImageContainer;
     private boolean mFrozen = false;
-    private YuvImage mFrozenImage;
     private GestureDetector mGestureDetector;
     private Slider mZoomSlider;
+    private ToggleButton mFlashToggleButton;
+    private ToggleButton mFocusToggleButton;
+    private ToggleButton mNegativeToggleButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -58,10 +57,24 @@ public class MagnifierFragment extends Fragment {
 
                 Camera.Size s = getOptimalPreviewSize(mParameters.getSupportedPreviewSizes(), w, h);
                 mParameters.setPreviewSize(s.width, s.height);
-                if (mParameters.isZoomSupported()) {
+                if (CameraCapabilities.isZoomSupported(mParameters)) {
                     mParameters.setZoom(mZoomSlider.getCurrentValue());
                 }
                 mCamera.setParameters(mParameters);
+
+                if (!CameraCapabilities.isFocusSupported(mParameters)) {
+                    mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
+                }
+                if (!CameraCapabilities.isFlashSupported(mParameters)) {
+                    mFlashToggleButton.setVisibility(View.GONE);
+                }
+                if (!CameraCapabilities.isNegativeEffectSupported(mParameters)) {
+                    mNegativeToggleButton.setVisibility(View.GONE);
+                }
+                if (!CameraCapabilities.isFocusSupported(mParameters)) {
+                    mFocusToggleButton.setVisibility(View.GONE);
+                }
+
                 startCameraPreview();
             }
         });
@@ -97,7 +110,7 @@ public class MagnifierFragment extends Fragment {
         zoomSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (mParameters.isZoomSupported()) {
+                if (CameraCapabilities.isZoomSupported(mParameters)) {
                     mParameters.setZoom(mZoomSlider.setLevel(progress));
                     mCamera.setParameters(mParameters);
                 }
@@ -117,54 +130,56 @@ public class MagnifierFragment extends Fragment {
             }
         });
 
-        final ToggleButton flashButton = (ToggleButton) v.findViewById(R.id.toggleFlashButton);
-        flashButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mFlashToggleButton = (ToggleButton) v.findViewById(R.id.toggleFlashButton);
+        mFlashToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
+                        if (mFrozen) {
+                            startCameraPreview();
+                        }
                         Toggle<String> flashToggle = new Toggle<String>(Camera.Parameters.FLASH_MODE_TORCH, Camera.Parameters.FLASH_MODE_OFF);
                         mParameters.setFlashMode(flashToggle.toggle(isChecked));
                         mCamera.setParameters(mParameters);
-                        if (mFrozen) {
-                            startCameraPreview();
-                        }
                     }
                 });
             }
         });
 
-        final ToggleButton negativeToggleButton = (ToggleButton) v.findViewById(R.id.toggleNegativeButton);
-        negativeToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mNegativeToggleButton = (ToggleButton) v.findViewById(R.id.toggleNegativeButton);
+        mNegativeToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
+                        if (mFrozen) {
+                            startCameraPreview();
+                        }
                         Toggle<String> negativeToggle = new Toggle<String>(Camera.Parameters.EFFECT_NEGATIVE, Camera.Parameters.EFFECT_NONE);
                         mParameters.setColorEffect(negativeToggle.toggle(isChecked));
                         mCamera.setParameters(mParameters);
-                        if (mFrozen) {
-                            startCameraPreview();
-                        }
                     }
                 });
             }
         });
 
-        final ToggleButton focusToggleButton = (ToggleButton) v.findViewById(R.id.toggleFocusButton);
-        focusToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mFocusToggleButton = (ToggleButton) v.findViewById(R.id.toggleFocusButton);
+        mFocusToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Toggle<String> focusModeToggle = new Toggle<String>(Camera.Parameters.FOCUS_MODE_AUTO, Camera.Parameters.FOCUS_MODE_MACRO);
-                        mParameters.setFocusMode(focusModeToggle.toggle(isChecked));
-                        mCamera.setParameters(mParameters);
                         if (mFrozen) {
                             startCameraPreview();
+                        }
+                        if (CameraCapabilities.isFocusSupported(mParameters)) {
+                            Toggle<String> focusModeToggle = new Toggle<String>(Camera.Parameters.FOCUS_MODE_AUTO, Camera.Parameters.FOCUS_MODE_MACRO);
+                            mParameters.setFocusMode(focusModeToggle.toggle(isChecked));
+                            mCamera.setParameters(mParameters);
                         }
                     }
                 });
@@ -195,14 +210,15 @@ public class MagnifierFragment extends Fragment {
 
     @Override
     public void onResume() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-//            mCamera = Camera.open(0);
-//        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            mCamera = Camera.open(0);
+        } else {
             mCamera = Camera.open();
-//        }
+        }
         mParameters = mCamera.getParameters();
-        mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
         mParameters.setPreviewFormat(ImageFormat.NV21);
+        Camera.Size size = getWorkablePictureSize();
+        mParameters.setPictureSize(size.width, size.height);
         mZoomSlider = new Slider(mParameters.getMaxZoom());
         super.onResume();
     }
@@ -214,6 +230,17 @@ public class MagnifierFragment extends Fragment {
             mCamera.release();
             mCamera = null;
         }
+    }
+
+    private Camera.Size getWorkablePictureSize() {
+        Camera.Size size = null;
+        for (Camera.Size s : mParameters.getSupportedPictureSizes()) {
+            size = s;
+            if (s.width < 1300) {
+                break;
+            }
+        }
+        return size;
     }
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
@@ -264,10 +291,18 @@ public class MagnifierFragment extends Fragment {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (mFrozen) {
-                mCapturedImage.save();
-                mCapturedImageContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.animator.save_captured_image));
-                startCameraPreview();
+            if (mFrozen && mPreviewImage.hasHighResolutionImage()) {
+                mPreviewImage.saveHighResolutionImage();
+                Toast toast = Toast.makeText(getActivity(), getString(R.string.gallery_saved), Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM, 0, 0);
+                toast.show();
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                Fragment fragment = ImagePreviewFragment.newInstance(mPreviewImage.getFullPath());
+                fm.beginTransaction()
+                        .setCustomAnimations(R.animator.load_gallery, R.animator.unload_gallery, R.animator.load_gallery, R.animator.unload_gallery)
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commitAllowingStateLoss();
             }
             return true;
         }
@@ -280,15 +315,29 @@ public class MagnifierFragment extends Fragment {
                 mCamera.autoFocus(new Camera.AutoFocusCallback() {
                     @Override
                     public void onAutoFocus(boolean success, Camera camera) {
-                        if (success) {
+                        if (!CameraCapabilities.isFocusSupported(mParameters) || success) {
                             mCamera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
                                 @Override
                                 public void onPreviewFrame(byte[] data, Camera camera) {
-                                    Camera.Size size = mParameters.getPreviewSize();
-                                    mFrozenImage = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
+                                    final Camera.Size size = mParameters.getPreviewSize();
                                     stopCameraPreview();
-                                    mCapturedImage = new PreviewImage(getActivity().getFilesDir());
-                                    mCapturedImageContainer.setImageBitmap(BitmapUtil.convert(mCapturedImage.capture(mFrozenImage, size.width, size.height).toByteArray()));
+                                    mPreviewImage = new PreviewImage(getActivity().getFilesDir());
+                                    mCamera.takePicture(null, null, new Camera.PictureCallback() {
+                                        @Override
+                                        public void onPictureTaken(byte[] data, Camera camera) {
+                                            ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
+                                            bos.write(data, 0, data.length);
+
+                                            mPreviewImage.setHighResolutionImage(bos);
+                                            mCapturedImageContainer.setImageBitmap(BitmapUtil.decodeSampledBitmapFromBitmap(data, size.width, size.height));
+
+                                            try {
+                                                bos.close();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
                                 }
                             });
                         }

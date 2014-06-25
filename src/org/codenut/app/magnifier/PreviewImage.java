@@ -1,8 +1,5 @@
 package org.codenut.app.magnifier;
 
-import android.graphics.Rect;
-import android.graphics.YuvImage;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +12,7 @@ import java.util.Locale;
 public class PreviewImage {
     private File mDirectory;
     private String mName;
-    private ByteArrayOutputStream mCapture;
+    private ByteArrayOutputStream mHighResolutionImage;
 
     public PreviewImage(final File directory) {
         this(directory, new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S", Locale.getDefault()).format(new Date()) + ".jpg");
@@ -26,31 +23,23 @@ public class PreviewImage {
         mName = name;
     }
 
-    public ByteArrayOutputStream capture(final YuvImage image, final int width, final int height) {
-        Rect rectangle = new Rect();
-        rectangle.bottom = height;
-        rectangle.top = 0;
-        rectangle.left = 0;
-        rectangle.right = width;
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        image.compressToJpeg(rectangle, 100, bos);
-
-        try {
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        mCapture = bos;
-        return bos;
+    public static String getDatePart(final File file) {
+        return file.getName().substring(0, 10);
     }
 
-    public void save() {
+    public static String getTimePart(final File file) {
+        return file.getName().substring(11, 19).replace('-', ':');
+    }
+
+    public void setHighResolutionImage(final ByteArrayOutputStream out) {
+        mHighResolutionImage = out;
+    }
+
+    public void saveHighResolutionImage() {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(getFullPath());
-            mCapture.writeTo(fos);
+            mHighResolutionImage.writeTo(fos);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -64,20 +53,15 @@ public class PreviewImage {
         }
     }
 
+    public boolean hasHighResolutionImage() {
+        return mHighResolutionImage != null;
+    }
+
     private String getName() {
         return mName;
     }
 
     public File getFullPath() {
         return new File(mDirectory, getName());
-    }
-
-
-    public static String getDatePart(final File file) {
-        return file.getName().substring(0, 10);
-    }
-
-    public static String getTimePart(final File file) {
-        return file.getName().substring(11, 19).replace('-', ':');
     }
 }

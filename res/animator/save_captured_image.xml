@@ -3,14 +3,14 @@
            android:fromYScale="1"
            android:toXScale="@dimen/buttons_size"
            android:toYScale="@dimen/buttons_size"
-           android:duration="600"/>
+           android:duration="800"/>
 
     <translate
             android:fromXDelta="0"
             android:fromYDelta="0"
             android:toXDelta="+12"
             android:toYDelta="+12"
-            android:duration="600"/>
+            android:duration="800"/>
 
     <rotate
             android:fromDegrees="0"
@@ -18,11 +18,11 @@
             android:toDegrees="360"
             android:pivotX="25%"
             android:pivotY="25%"
-            android:duration="600"
+            android:duration="800"
             android:startOffset="0"/>
 
     <alpha
             android:fromAlpha="1.0"
             android:toAlpha="0.5"
-            android:duration="600"/>
+            android:duration="800"/>
 </set>

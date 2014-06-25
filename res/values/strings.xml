@@ -2,12 +2,12 @@
 <resources>
     <string name="app_name">Magnifier</string>
 
-    <string name="gallery.empty">No images in gallery!</string>
-
-    <string name="dialog.delete.title">Deleting image</string>
-    <string name="dialog.delete.text">Are you sure?</string>
-    <string name="dialog.delete.button.ok">OK</string>
-    <string name="dialog.delete.button.cancel">Cancel</string>
+    <string name="gallery_empty">No images in gallery!</string>
+    <string name="gallery_saved">Image saved!</string>
+    <string name="dialog_delete_title">Deleting image</string>
+    <string name="dialog_delete_text">Are you sure?</string>
+    <string name="dialog_delete_button_ok">OK</string>
+    <string name="dialog_delete_button_cancel">Cancel</string>
 
     <string name="camera_capture_content_description">capture</string>
     <string name="camera_gallery_content_description">gallery</string>
